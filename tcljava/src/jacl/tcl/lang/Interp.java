@@ -1,7 +1,7 @@
 /*
  * Interp.java --
  *
- *	Implements the core Tcl interpreter.
+ *  Implements the core Tcl interpreter.
  *
  * Copyright (c) 1997 Cornell University.
  * Copyright (c) 1997-1998 Sun Microsystems, Inc.
@@ -340,10 +340,10 @@ Var[] lookupVarResult = new Var[2];
 // List of unsafe commands:
 
 static final String[] unsafeCmds = {
-    "encoding",	"exit",	    "load",	"cd",		"fconfigure",
-    "file",	"glob",	    "open",	"pwd",		"socket",
-    "beep",	"echo",	    "ls",	"resource",	"source",
-    "exec",	"source"
+    "encoding", "exit",     "load", "cd",       "fconfigure",
+    "file", "glob",     "open", "pwd",      "socket",
+    "beep", "echo",     "ls",   "resource", "source",
+    "exec", "source"
 };
 
 // Flags controlling the call of invoke.
@@ -383,11 +383,11 @@ private TclInterruptedExceptionEvent interruptedEvent = null;
  *----------------------------------------------------------------------
  *
  * Tcl_CreateInterp -> Interp
- *	Initializes an interpreter object.
+ *  Initializes an interpreter object.
  *
  * Side effects:
- *	Various parts of the interpreter are initialized; built-in
- *	commands are created; global variables are initialized, etc.
+ *  Various parts of the interpreter are initialized; built-in
+ *  commands are created; global variables are initialized, etc.
  *
  *----------------------------------------------------------------------
  */
@@ -510,7 +510,7 @@ Interp()
     globalNs         = null; // force creation of global ns below
     globalNs         = Namespace.createNamespace(this, null, null);
     if (globalNs == null) {
-	throw new TclRuntimeError("Interp(): can't create global namespace");
+    throw new TclRuntimeError("Interp(): can't create global namespace");
     }
 
     
@@ -519,9 +519,9 @@ Interp()
     workingDir       = new File(Util.tryGetSystemProperty("user.dir", "."));
     noEval           = 0;
 
-    cThread	     = Thread.currentThread();
-    cThreadName	     = cThread.getName();
-    notifier	     = Notifier.getNotifierForThread(cThread);
+    cThread      = Thread.currentThread();
+    cThreadName      = cThread.getName();
+    notifier         = Notifier.getNotifierForThread(cThread);
     notifier.preserve();
 
     randSeedInit     = false;
@@ -555,53 +555,53 @@ Interp()
     createCommands();
 
     try {
-	// Set up tcl_platform, tcl_version, tcl_library and other
-	// global variables.
+    // Set up tcl_platform, tcl_version, tcl_library and other
+    // global variables.
 
-	setVar("tcl_platform", "platform", "java", TCL.GLOBAL_ONLY);
-	setVar("tcl_platform", "byteOrder", "bigEndian", TCL.GLOBAL_ONLY);
-	
-	setVar("tcl_platform", "os", 
-		Util.tryGetSystemProperty("os.name", "?"), TCL.GLOBAL_ONLY);
-	setVar("tcl_platform", "osVersion", 
-		Util.tryGetSystemProperty("os.version", "?"), TCL.GLOBAL_ONLY);
-	setVar("tcl_platform", "machine", 
-		Util.tryGetSystemProperty("os.arch", "?"), TCL.GLOBAL_ONLY);
-	
-	setVar("tcl_version", TCL_VERSION, TCL.GLOBAL_ONLY);
-	setVar("tcl_patchLevel", TCL_PATCH_LEVEL, TCL.GLOBAL_ONLY);
-	setVar("tcl_library", "resource:/tcl/lang/library",
-		TCL.GLOBAL_ONLY);
-	if (Util.isWindows()) {
-	    setVar("tcl_platform", "host_platform", "windows",
-		    TCL.GLOBAL_ONLY);
-	} else if (Util.isMac()) {
-	    setVar("tcl_platform", "host_platform", "macintosh",
-		    TCL.GLOBAL_ONLY);
-	} else {
-	    setVar("tcl_platform", "host_platform", "unix",
-		    TCL.GLOBAL_ONLY);
-	}
+    setVar("tcl_platform", "platform", "java", TCL.GLOBAL_ONLY);
+    setVar("tcl_platform", "byteOrder", "bigEndian", TCL.GLOBAL_ONLY);
+    
+    setVar("tcl_platform", "os", 
+        Util.tryGetSystemProperty("os.name", "?"), TCL.GLOBAL_ONLY);
+    setVar("tcl_platform", "osVersion", 
+        Util.tryGetSystemProperty("os.version", "?"), TCL.GLOBAL_ONLY);
+    setVar("tcl_platform", "machine", 
+        Util.tryGetSystemProperty("os.arch", "?"), TCL.GLOBAL_ONLY);
+    
+    setVar("tcl_version", TCL_VERSION, TCL.GLOBAL_ONLY);
+    setVar("tcl_patchLevel", TCL_PATCH_LEVEL, TCL.GLOBAL_ONLY);
+    setVar("tcl_library", "resource:/tcl/lang/library",
+        TCL.GLOBAL_ONLY);
+    if (Util.isWindows()) {
+        setVar("tcl_platform", "host_platform", "windows",
+            TCL.GLOBAL_ONLY);
+    } else if (Util.isMac()) {
+        setVar("tcl_platform", "host_platform", "macintosh",
+            TCL.GLOBAL_ONLY);
+    } else {
+        setVar("tcl_platform", "host_platform", "unix",
+            TCL.GLOBAL_ONLY);
+    }
 
-	// Create the env array an populated it with proper
-	// values.
+    // Create the env array an populated it with proper
+    // values.
 
-	Env.initialize(this);
+    Env.initialize(this);
 
-	// Register Tcl's version number. Note: This MUST be 
-	// done before the call to evalResource, otherwise
-	// calls to "package require tcl" will fail.
-	
-	pkgProvide("Tcl", TCL_VERSION);
-	
-	// Source the init.tcl script to initialize auto-loading.
-	
-	evalResource("/tcl/lang/library/init.tcl");
+    // Register Tcl's version number. Note: This MUST be 
+    // done before the call to evalResource, otherwise
+    // calls to "package require tcl" will fail.
+    
+    pkgProvide("Tcl", TCL_VERSION);
+    
+    // Source the init.tcl script to initialize auto-loading.
+    
+    evalResource("/tcl/lang/library/init.tcl");
 
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     // Debug print interp info, this is handy when tracking
@@ -623,17 +623,17 @@ Interp()
  *
  * Tcl_DeleteInterp -> dispose
  *
- *	Invoked to indicate that the interp should be disposed of.
- *	If there are no Tcl_Preserve calls in effect for this
- *	interpreter, it is deleted immediately, otherwise the
- *	interpreter is deleted when the last Tcl_Preserve is
- *	matched by a call to Tcl_Release.
+ *  Invoked to indicate that the interp should be disposed of.
+ *  If there are no Tcl_Preserve calls in effect for this
+ *  interpreter, it is deleted immediately, otherwise the
+ *  interpreter is deleted when the last Tcl_Preserve is
+ *  matched by a call to Tcl_Release.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Cleans up the interpreter.
+ *  Cleans up the interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -670,20 +670,20 @@ dispose() {
  *
  * DeleteInterpProc -> eventuallyDispose
  *
- *	This method cleans up the state of the interpreter so that
- *	it can be garbage collected safely. This routine needs to
- *	break any circular references that might keep the interpreter
- *	alive indefinitely.
+ *  This method cleans up the state of the interpreter so that
+ *  it can be garbage collected safely. This routine needs to
+ *  break any circular references that might keep the interpreter
+ *  alive indefinitely.
  *
- *	This proc should never be called directly. Instead it is called
- *	via the EventuallyFreed superclass. This method will only
- *	ever be invoked once.
+ *  This proc should never be called directly. Instead it is called
+ *  via the EventuallyFreed superclass. This method will only
+ *  ever be invoked once.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Cleans up the interpreter.
+ *  Cleans up the interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -711,14 +711,14 @@ eventuallyDispose()
     // Remove our association with the notifer (if we had one).
 
     if (notifier != null) {
-	notifier.release();
-	notifier = null;
+    notifier.release();
+    notifier = null;
 
-	if (debug) {
-	    System.out.println("notifier set to null for " + this);
-	}
+    if (debug) {
+        System.out.println("notifier set to null for " + this);
+    }
     } else {
-	throw new TclRuntimeError("eventuallyDispose() already invoked for " + this);
+    throw new TclRuntimeError("eventuallyDispose() already invoked for " + this);
     }
 
     // Dismantle everything in the global namespace except for the
@@ -737,39 +737,39 @@ eventuallyDispose()
     TclObject errorInfoObj = null, errorCodeObj = null;
 
     try {
-	errorInfoObj = getVar("errorInfo", null, TCL.GLOBAL_ONLY);
+    errorInfoObj = getVar("errorInfo", null, TCL.GLOBAL_ONLY);
     } catch (TclException e) {
-	// Do nothing when var does not exist.
+    // Do nothing when var does not exist.
     }
     
     if (errorInfoObj != null) {
-	errorInfoObj.preserve();
+    errorInfoObj.preserve();
     }
 
     try {
-	errorCodeObj = getVar("errorCode", null, TCL.GLOBAL_ONLY);
+    errorCodeObj = getVar("errorCode", null, TCL.GLOBAL_ONLY);
     } catch (TclException e) {
-	// Do nothing when var does not exist.
+    // Do nothing when var does not exist.
     }
 
     if (errorCodeObj != null) {
-	errorCodeObj.preserve();
+    errorCodeObj.preserve();
     }
 
     frame = null;
     varFrame = null;
 
     try {
-	if (errorInfoObj != null) {
-	    setVar("errorInfo", null, errorInfoObj, TCL.GLOBAL_ONLY);
-	    errorInfoObj.release();
-	}
-	if (errorCodeObj != null) {
-	    setVar("errorCode", null, errorCodeObj, TCL.GLOBAL_ONLY);
-	    errorCodeObj.release();
-	}
+    if (errorInfoObj != null) {
+        setVar("errorInfo", null, errorInfoObj, TCL.GLOBAL_ONLY);
+        errorInfoObj.release();
+    }
+    if (errorCodeObj != null) {
+        setVar("errorCode", null, errorCodeObj, TCL.GLOBAL_ONLY);
+        errorCodeObj.release();
+    }
     } catch (TclException e) {
-	// Ignore it -- same behavior as Tcl 8.0.
+    // Ignore it -- same behavior as Tcl 8.0.
     }
 
     // Tear down the math function table.
@@ -781,27 +781,27 @@ eventuallyDispose()
     // callbacks, so we iterate.
 
     while (assocData != null) {
-	HashMap table = assocData;
-	assocData = null;
+    HashMap table = assocData;
+    assocData = null;
 
-	for (Iterator iter = table.entrySet().iterator(); iter.hasNext() ;) {
-	    Map.Entry entry = (Map.Entry) iter.next();
-	    AssocData data = (AssocData) entry.getValue();
-	    data.disposeAssocData(this);
-	    iter.remove();
-	}
+    for (Iterator iter = table.entrySet().iterator(); iter.hasNext() ;) {
+        Map.Entry entry = (Map.Entry) iter.next();
+        AssocData data = (AssocData) entry.getValue();
+        data.disposeAssocData(this);
+        iter.remove();
+    }
     }
 
     // Close any remaining channels
 
     for (Iterator iter = interpChanTable.entrySet().iterator(); iter.hasNext() ;) {
-	Map.Entry entry = (Map.Entry) iter.next();
-	Channel chan = (Channel) entry.getValue();
-	try {
-	    chan.close();
-	} catch (IOException ex) {
-	    // Ignore any IO errors
-	}
+    Map.Entry entry = (Map.Entry) iter.next();
+    Channel chan = (Channel) entry.getValue();
+    try {
+        chan.close();
+    } catch (IOException ex) {
+        // Ignore any IO errors
+    }
     }
     interpChanTable.clear();
     interpChanTable = null;
@@ -827,16 +827,16 @@ eventuallyDispose()
  *
  * finalize --
  *
- *	Interpreter finalization method. We print a message to
- *	stderr if the user neglected to dispose of an Interp
- *	properly. The Interp should have been disposed of
- *	in the thread that created it.
+ *  Interpreter finalization method. We print a message to
+ *  stderr if the user neglected to dispose of an Interp
+ *  properly. The Interp should have been disposed of
+ *  in the thread that created it.
  *
  * Results:
- *	Prints to stderr.
+ *  Prints to stderr.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -855,14 +855,14 @@ finalize() throws Throwable
  *
  * TclInterpReady -- ready
  *
- *	Check if an interpreter is ready to eval commands or scripts, i.e., if
- *	it was not deleted and if the nesting level is not too high.
+ *  Check if an interpreter is ready to eval commands or scripts, i.e., if
+ *  it was not deleted and if the nesting level is not too high.
  *
  * Results:
- *	Raises a TclExcetpion is the interp is not ready.
+ *  Raises a TclExcetpion is the interp is not ready.
  *
  * Side effects:
- *	The interpreters result is cleared.
+ *  The interpreters result is cleared.
  *
  *----------------------------------------------------------------------
  */
@@ -879,17 +879,17 @@ ready()
     // If the interpreter was deleted, return an error.
 
     if (deleted){
-	setResult("attempt to call eval in deleted interpreter");
-	setErrorCode(TclString.newInstance(
-		"CORE IDELETE {attempt to call eval in deleted interpreter}"));
-	throw new TclException(TCL.ERROR);
+    setResult("attempt to call eval in deleted interpreter");
+    setErrorCode(TclString.newInstance(
+        "CORE IDELETE {attempt to call eval in deleted interpreter}"));
+    throw new TclException(TCL.ERROR);
     }
 
     // Check depth of nested calls to eval:  if this gets too large,
     // it's probably because of an infinite loop somewhere.
 
     if (nestLevel >= maxNestingDepth) {
-	Parser.infiniteLoopException(this);
+    Parser.infiniteLoopException(this);
     }
 }
 
@@ -898,15 +898,15 @@ ready()
  *
  * createCommands --
  *
- *	Create the build-in commands. These commands are loaded on
- *	demand -- the class file of a Command class are loaded into
- *	the JVM the first time the given command is executed.
+ *  Create the build-in commands. These commands are loaded on
+ *  demand -- the class file of a Command class are loaded into
+ *  the JVM the first time the given command is executed.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Commands are registered.
+ *  Commands are registered.
  *
  *----------------------------------------------------------------------
  */
@@ -914,80 +914,80 @@ ready()
 protected void 
 createCommands() 
 {
-    Extension.loadOnDemand(this, "after",	  "tcl.lang.AfterCmd");
-    Extension.loadOnDemand(this, "append",	  "tcl.lang.AppendCmd");
-    Extension.loadOnDemand(this, "array",	  "tcl.lang.ArrayCmd");
-    Extension.loadOnDemand(this, "binary",	  "tcl.lang.BinaryCmd");
-    Extension.loadOnDemand(this, "break",	  "tcl.lang.BreakCmd");
-    Extension.loadOnDemand(this, "case",	  "tcl.lang.CaseCmd");
-    Extension.loadOnDemand(this, "catch",	  "tcl.lang.CatchCmd");
-    Extension.loadOnDemand(this, "cd",	  	  "tcl.lang.CdCmd");
-    Extension.loadOnDemand(this, "clock",	  "tcl.lang.ClockCmd");
-    Extension.loadOnDemand(this, "close",	  "tcl.lang.CloseCmd");
-    Extension.loadOnDemand(this, "continue",  	  "tcl.lang.ContinueCmd");
-    Extension.loadOnDemand(this, "concat",	  "tcl.lang.ConcatCmd");
-    Extension.loadOnDemand(this, "encoding",	  "tcl.lang.EncodingCmd");
-    Extension.loadOnDemand(this, "eof",	 	  "tcl.lang.EofCmd");
-    Extension.loadOnDemand(this, "eval",	  "tcl.lang.EvalCmd");
-    Extension.loadOnDemand(this, "error",	  "tcl.lang.ErrorCmd");
+    Extension.loadOnDemand(this, "after",     "tcl.lang.AfterCmd");
+    Extension.loadOnDemand(this, "append",    "tcl.lang.AppendCmd");
+    Extension.loadOnDemand(this, "array",     "tcl.lang.ArrayCmd");
+    Extension.loadOnDemand(this, "binary",    "tcl.lang.BinaryCmd");
+    Extension.loadOnDemand(this, "break",     "tcl.lang.BreakCmd");
+    Extension.loadOnDemand(this, "case",      "tcl.lang.CaseCmd");
+    Extension.loadOnDemand(this, "catch",     "tcl.lang.CatchCmd");
+    Extension.loadOnDemand(this, "cd",        "tcl.lang.CdCmd");
+    Extension.loadOnDemand(this, "clock",     "tcl.lang.ClockCmd");
+    Extension.loadOnDemand(this, "close",     "tcl.lang.CloseCmd");
+    Extension.loadOnDemand(this, "continue",      "tcl.lang.ContinueCmd");
+    Extension.loadOnDemand(this, "concat",    "tcl.lang.ConcatCmd");
+    Extension.loadOnDemand(this, "encoding",      "tcl.lang.EncodingCmd");
+    Extension.loadOnDemand(this, "eof",       "tcl.lang.EofCmd");
+    Extension.loadOnDemand(this, "eval",      "tcl.lang.EvalCmd");
+    Extension.loadOnDemand(this, "error",     "tcl.lang.ErrorCmd");
     if (! Util.isMac()) {
-	Extension.loadOnDemand(this, "exec",	  "tcl.lang.ExecCmd");
+    Extension.loadOnDemand(this, "exec",      "tcl.lang.ExecCmd");
     }
-    Extension.loadOnDemand(this, "exit",	  "tcl.lang.ExitCmd");
-    Extension.loadOnDemand(this, "expr",	  "tcl.lang.ExprCmd");
-    Extension.loadOnDemand(this, "fblocked", 	  "tcl.lang.FblockedCmd");
-    Extension.loadOnDemand(this, "fconfigure",	  "tcl.lang.FconfigureCmd");
-    Extension.loadOnDemand(this, "file",      	  "tcl.lang.FileCmd");
-    Extension.loadOnDemand(this, "flush",    	  "tcl.lang.FlushCmd");
-    Extension.loadOnDemand(this, "for",      	  "tcl.lang.ForCmd");
-    Extension.loadOnDemand(this, "foreach",  	  "tcl.lang.ForeachCmd");
-    Extension.loadOnDemand(this, "format",   	  "tcl.lang.FormatCmd");
-    Extension.loadOnDemand(this, "gets",   	  "tcl.lang.GetsCmd");
-    Extension.loadOnDemand(this, "global",   	  "tcl.lang.GlobalCmd");
-    Extension.loadOnDemand(this, "glob",     	  "tcl.lang.GlobCmd");
-    Extension.loadOnDemand(this, "if",	  	  "tcl.lang.IfCmd");
-    Extension.loadOnDemand(this, "incr",	  "tcl.lang.IncrCmd");
-    Extension.loadOnDemand(this, "info",	  "tcl.lang.InfoCmd");
-    Extension.loadOnDemand(this, "interp",	  "tcl.lang.InterpCmd");
-    Extension.loadOnDemand(this, "list",     	  "tcl.lang.ListCmd");
-    Extension.loadOnDemand(this, "join",     	  "tcl.lang.JoinCmd");
-    Extension.loadOnDemand(this, "lappend",	  "tcl.lang.LappendCmd");
-    Extension.loadOnDemand(this, "lindex",	  "tcl.lang.LindexCmd");
-    Extension.loadOnDemand(this, "linsert", 	  "tcl.lang.LinsertCmd");
-    Extension.loadOnDemand(this, "llength", 	  "tcl.lang.LlengthCmd");
-    Extension.loadOnDemand(this, "lrange",  	  "tcl.lang.LrangeCmd");
-    Extension.loadOnDemand(this, "lreplace",	  "tcl.lang.LreplaceCmd");
-    Extension.loadOnDemand(this, "lsearch",  	  "tcl.lang.LsearchCmd");
-    Extension.loadOnDemand(this, "lsort",   	  "tcl.lang.LsortCmd");
-    Extension.loadOnDemand(this, "namespace",	  "tcl.lang.NamespaceCmd");
-    Extension.loadOnDemand(this, "open",    	  "tcl.lang.OpenCmd");
-    Extension.loadOnDemand(this, "package",	  "tcl.lang.PackageCmd");
-    Extension.loadOnDemand(this, "proc",	  "tcl.lang.ProcCmd");
-    Extension.loadOnDemand(this, "puts",	  "tcl.lang.PutsCmd");
-    Extension.loadOnDemand(this, "pwd",	  	  "tcl.lang.PwdCmd");
-    Extension.loadOnDemand(this, "read",	  "tcl.lang.ReadCmd");
-    Extension.loadOnDemand(this, "regsub",	  "tcl.lang.RegsubCmd");
-    Extension.loadOnDemand(this, "rename",	  "tcl.lang.RenameCmd");
-    Extension.loadOnDemand(this, "return",	  "tcl.lang.ReturnCmd");
-    Extension.loadOnDemand(this, "scan",	  "tcl.lang.ScanCmd");
-    Extension.loadOnDemand(this, "seek",	  "tcl.lang.SeekCmd");
-    Extension.loadOnDemand(this, "set",	  	  "tcl.lang.SetCmd");
-    Extension.loadOnDemand(this, "socket",	  "tcl.lang.SocketCmd");
-    Extension.loadOnDemand(this, "source",	  "tcl.lang.SourceCmd");
-    Extension.loadOnDemand(this, "split",	  "tcl.lang.SplitCmd");
-    Extension.loadOnDemand(this, "string",	  "tcl.lang.StringCmd");
-    Extension.loadOnDemand(this, "subst",	  "tcl.lang.SubstCmd");
-    Extension.loadOnDemand(this, "switch",	  "tcl.lang.SwitchCmd");
-    Extension.loadOnDemand(this, "tell",  	  "tcl.lang.TellCmd");
-    Extension.loadOnDemand(this, "time",	  "tcl.lang.TimeCmd");
-    Extension.loadOnDemand(this, "trace",	  "tcl.lang.TraceCmd");
-    Extension.loadOnDemand(this, "unset",	  "tcl.lang.UnsetCmd");
-    Extension.loadOnDemand(this, "update",	  "tcl.lang.UpdateCmd");
-    Extension.loadOnDemand(this, "uplevel",	  "tcl.lang.UplevelCmd");
-    Extension.loadOnDemand(this, "upvar",	  "tcl.lang.UpvarCmd");
-    Extension.loadOnDemand(this, "variable",	  "tcl.lang.VariableCmd");
-    Extension.loadOnDemand(this, "vwait",	  "tcl.lang.VwaitCmd");
-    Extension.loadOnDemand(this, "while",	  "tcl.lang.WhileCmd");
+    Extension.loadOnDemand(this, "exit",      "tcl.lang.ExitCmd");
+    Extension.loadOnDemand(this, "expr",      "tcl.lang.ExprCmd");
+    Extension.loadOnDemand(this, "fblocked",      "tcl.lang.FblockedCmd");
+    Extension.loadOnDemand(this, "fconfigure",    "tcl.lang.FconfigureCmd");
+    Extension.loadOnDemand(this, "file",          "tcl.lang.FileCmd");
+    Extension.loadOnDemand(this, "flush",         "tcl.lang.FlushCmd");
+    Extension.loadOnDemand(this, "for",           "tcl.lang.ForCmd");
+    Extension.loadOnDemand(this, "foreach",       "tcl.lang.ForeachCmd");
+    Extension.loadOnDemand(this, "format",        "tcl.lang.FormatCmd");
+    Extension.loadOnDemand(this, "gets",      "tcl.lang.GetsCmd");
+    Extension.loadOnDemand(this, "global",        "tcl.lang.GlobalCmd");
+    Extension.loadOnDemand(this, "glob",          "tcl.lang.GlobCmd");
+    Extension.loadOnDemand(this, "if",        "tcl.lang.IfCmd");
+    Extension.loadOnDemand(this, "incr",      "tcl.lang.IncrCmd");
+    Extension.loadOnDemand(this, "info",      "tcl.lang.InfoCmd");
+    Extension.loadOnDemand(this, "interp",    "tcl.lang.InterpCmd");
+    Extension.loadOnDemand(this, "list",          "tcl.lang.ListCmd");
+    Extension.loadOnDemand(this, "join",          "tcl.lang.JoinCmd");
+    Extension.loadOnDemand(this, "lappend",   "tcl.lang.LappendCmd");
+    Extension.loadOnDemand(this, "lindex",    "tcl.lang.LindexCmd");
+    Extension.loadOnDemand(this, "linsert",       "tcl.lang.LinsertCmd");
+    Extension.loadOnDemand(this, "llength",       "tcl.lang.LlengthCmd");
+    Extension.loadOnDemand(this, "lrange",        "tcl.lang.LrangeCmd");
+    Extension.loadOnDemand(this, "lreplace",      "tcl.lang.LreplaceCmd");
+    Extension.loadOnDemand(this, "lsearch",       "tcl.lang.LsearchCmd");
+    Extension.loadOnDemand(this, "lsort",         "tcl.lang.LsortCmd");
+    Extension.loadOnDemand(this, "namespace",     "tcl.lang.NamespaceCmd");
+    Extension.loadOnDemand(this, "open",          "tcl.lang.OpenCmd");
+    Extension.loadOnDemand(this, "package",   "tcl.lang.PackageCmd");
+    Extension.loadOnDemand(this, "proc",      "tcl.lang.ProcCmd");
+    Extension.loadOnDemand(this, "puts",      "tcl.lang.PutsCmd");
+    Extension.loadOnDemand(this, "pwd",       "tcl.lang.PwdCmd");
+    Extension.loadOnDemand(this, "read",      "tcl.lang.ReadCmd");
+    Extension.loadOnDemand(this, "regsub",    "tcl.lang.RegsubCmd");
+    Extension.loadOnDemand(this, "rename",    "tcl.lang.RenameCmd");
+    Extension.loadOnDemand(this, "return",    "tcl.lang.ReturnCmd");
+    Extension.loadOnDemand(this, "scan",      "tcl.lang.ScanCmd");
+    Extension.loadOnDemand(this, "seek",      "tcl.lang.SeekCmd");
+    Extension.loadOnDemand(this, "set",       "tcl.lang.SetCmd");
+    Extension.loadOnDemand(this, "socket",    "tcl.lang.SocketCmd");
+    Extension.loadOnDemand(this, "source",    "tcl.lang.SourceCmd");
+    Extension.loadOnDemand(this, "split",     "tcl.lang.SplitCmd");
+    Extension.loadOnDemand(this, "string",    "tcl.lang.StringCmd");
+    Extension.loadOnDemand(this, "subst",     "tcl.lang.SubstCmd");
+    Extension.loadOnDemand(this, "switch",    "tcl.lang.SwitchCmd");
+    Extension.loadOnDemand(this, "tell",      "tcl.lang.TellCmd");
+    Extension.loadOnDemand(this, "time",      "tcl.lang.TimeCmd");
+    Extension.loadOnDemand(this, "trace",     "tcl.lang.TraceCmd");
+    Extension.loadOnDemand(this, "unset",     "tcl.lang.UnsetCmd");
+    Extension.loadOnDemand(this, "update",    "tcl.lang.UpdateCmd");
+    Extension.loadOnDemand(this, "uplevel",   "tcl.lang.UplevelCmd");
+    Extension.loadOnDemand(this, "upvar",     "tcl.lang.UpvarCmd");
+    Extension.loadOnDemand(this, "variable",      "tcl.lang.VariableCmd");
+    Extension.loadOnDemand(this, "vwait",     "tcl.lang.VwaitCmd");
+    Extension.loadOnDemand(this, "while",     "tcl.lang.WhileCmd");
 
 
     // Add "regexp" and related commands to this interp.
@@ -999,9 +999,9 @@ createCommands()
         eval("package ifneeded tcltest 1.0 {source "+
             "resource:/tcl/lang/library/tcltest/tcltest.tcl}");
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     // The Java package is only loaded when the user does a
@@ -1013,9 +1013,9 @@ createCommands()
     try {
         eval("package ifneeded java 1.4.1 jaclloadjava");
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     // Load the Itcl package as a result of the user running "package require Itcl".
@@ -1025,9 +1025,9 @@ createCommands()
     try {
         eval("package ifneeded Itcl 3.3 {jaclloaditcl ; package provide Itcl 3.3}");
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     // Load the parser package as a result of the user
@@ -1039,20 +1039,20 @@ createCommands()
     try {
         eval("package ifneeded parser 1.4 {jaclloadparser}");
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     // Load the TJC package as a result of the user running "package require tjc"
     Extension.loadOnDemand(this, "jaclloadtjc", "tcl.lang.JaclLoadTJCCmd");
 
     try {
-	eval("package ifneeded TJC 1.0 {jaclloadtjc ; package provide TJC 1.0}");
+    eval("package ifneeded TJC 1.0 {jaclloadtjc ; package provide TJC 1.0}");
     } catch (TclException e) {
-	System.out.println(getResult());
-	e.printStackTrace();
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    System.out.println(getResult());
+    e.printStackTrace();
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
 }
@@ -1062,31 +1062,31 @@ createCommands()
  *
  * setAssocData --
  *
- *	Creates a named association between user-specified data and
- *	this interpreter. If the association already exists the data
- *	is overwritten with the new data. The data.deleteAssocData()
- *	method will be invoked when the interpreter is deleted.
+ *  Creates a named association between user-specified data and
+ *  this interpreter. If the association already exists the data
+ *  is overwritten with the new data. The data.deleteAssocData()
+ *  method will be invoked when the interpreter is deleted.
  *
- *	NOTE: deleteAssocData() is not called when an old data is
- *	replaced by a new data. Caller of setAssocData() is
- *	responsible with deleting the old data.
+ *  NOTE: deleteAssocData() is not called when an old data is
+ *  replaced by a new data. Caller of setAssocData() is
+ *  responsible with deleting the old data.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Sets the associated data, creates the association if needed.
+ *  Sets the associated data, creates the association if needed.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 setAssocData(
-    String name,		// Name for association.
-    AssocData data)		// Object associated with the name.
+    String name,        // Name for association.
+    AssocData data)     // Object associated with the name.
 {
     if (assocData == null) {
-	assocData = new HashMap();
+    assocData = new HashMap();
     }
     assocData.put(name, data);
 }
@@ -1096,24 +1096,24 @@ setAssocData(
  *
  * deleteAssocData --
  *
- *	Deletes a named association of user-specified data with
- *	the specified interpreter.
+ *  Deletes a named association of user-specified data with
+ *  the specified interpreter.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Deletes the association.
+ *  Deletes the association.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 deleteAssocData(
-    String name)		// Name of association.
+    String name)        // Name of association.
 {
     if (assocData == null) {
-	return;
+    return;
     }
 
     assocData.remove(name);
@@ -1124,27 +1124,27 @@ deleteAssocData(
  *
  * getAssocData --
  *
- *	Returns the AssocData instance associated with this name in
- *	the specified interpreter.
+ *  Returns the AssocData instance associated with this name in
+ *  the specified interpreter.
  *
  * Results:
- *	The AssocData instance in the AssocData record denoted by the
- *	named association, or null.
+ *  The AssocData instance in the AssocData record denoted by the
+ *  named association, or null.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public AssocData
 getAssocData(
-    String name)			// Name of association.
+    String name)            // Name of association.
 {
     if (assocData == null) {
-	return null;
+    return null;
     } else {
-	return (AssocData) assocData.get(name);
+    return (AssocData) assocData.get(name);
     }
 }
 
@@ -1153,17 +1153,17 @@ getAssocData(
  *
  * backgroundError --
  *
- *	This procedure is invoked to handle errors that occur in Tcl
- *	commands that are invoked in "background" (e.g. from event or
- *	timer bindings).
+ *  This procedure is invoked to handle errors that occur in Tcl
+ *  commands that are invoked in "background" (e.g. from event or
+ *  timer bindings).
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The command "bgerror" is invoked later as an idle handler to
- *	process the error, passing it the error message.  If that fails,
- *	then an error message is output on stderr.
+ *  The command "bgerror" is invoked later as an idle handler to
+ *  process the error, passing it the error message.  If that fails,
+ *  then an error message is output on stderr.
  *
  *----------------------------------------------------------------------
  */
@@ -1173,15 +1173,15 @@ backgroundError()
 {
     BgErrorMgr mgr = (BgErrorMgr)getAssocData("tclBgError");
     if (mgr == null) {
-	mgr = new BgErrorMgr(this);
-	setAssocData("tclBgError", mgr);
+    mgr = new BgErrorMgr(this);
+    setAssocData("tclBgError", mgr);
     }
     mgr.addBgError();
 }
 
 /*-----------------------------------------------------------------
  *
- *	                     VARIABLES
+ *                       VARIABLES
  *
  *-----------------------------------------------------------------
  */
@@ -1191,13 +1191,13 @@ backgroundError()
  *
  * setVar --
  *
- *	Sets a variable whose name and value are stored in TclObject.
+ *  Sets a variable whose name and value are stored in TclObject.
  *
  * Results:
- *	The TclObject, as it was set is returned.
+ *  The TclObject, as it was set is returned.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -1205,12 +1205,12 @@ backgroundError()
 final
 TclObject
 setVar(
-    TclObject nameObj,		// Name of variable, array, or array element
-				// to set.
-    TclObject value,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    TclObject nameObj,      // Name of variable, array, or array element
+                // to set.
+    TclObject value,        // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
@@ -1223,13 +1223,13 @@ throws
  *
  * setVar --
  *
- *	Set the value of a variable.
+ *  Set the value of a variable.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1237,12 +1237,12 @@ throws
 public final
 TclObject
 setVar(
-    String name,		// Name of variable, array, or array element
-				// to set.
-    TclObject value,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name,        // Name of variable, array, or array element
+                // to set.
+    TclObject value,        // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
@@ -1254,13 +1254,13 @@ throws
  *
  * setVar --
  *
- *	Set the value of a variable.
+ *  Set the value of a variable.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1268,15 +1268,15 @@ throws
 public final
 TclObject
 setVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array.
-    String name2,		// Name of an element within an array, or
-				// null.
-    TclObject value,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE or TCL.LIST_ELEMENT.
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array.
+    String name2,       // Name of an element within an array, or
+                // null.
+    TclObject value,        // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE or TCL.LIST_ELEMENT.
 throws
     TclException
 {
@@ -1288,13 +1288,13 @@ throws
  *
  * setVar --
  *
- *	Set the value of a variable.
+ *  Set the value of a variable.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1302,17 +1302,17 @@ throws
 final
 TclObject
 setVar(
-    String name,		// Name of variable, array, or array element
-				// to set.
-    String strValue,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name,        // Name of variable, array, or array element
+                // to set.
+    String strValue,        // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
     return Var.setVar(this, name, null, checkCommonString(strValue),
-	       (flags|TCL.LEAVE_ERR_MSG));
+           (flags|TCL.LEAVE_ERR_MSG));
 }
 
 /*
@@ -1320,13 +1320,13 @@ throws
  *
  * setVar --
  *
- *	Set a variable to the value in a String argument.
+ *  Set a variable to the value in a String argument.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1334,20 +1334,20 @@ throws
 public final
 TclObject
 setVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array.
-    String name2,		// Name of an element within an array, or
-				// null.
-    String strValue,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array.
+    String name2,       // Name of an element within an array, or
+                // null.
+    String strValue,        // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
     return Var.setVar(this, name1, name2, checkCommonString(strValue),
-	    (flags|TCL.LEAVE_ERR_MSG));
+        (flags|TCL.LEAVE_ERR_MSG));
 }
 
 /*
@@ -1355,13 +1355,13 @@ throws
  *
  * setVar --
  *
- *	Set a variable to the value in an int argument.
+ *  Set a variable to the value in an int argument.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1369,20 +1369,20 @@ throws
 public final
 TclObject
 setVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array.
-    String name2,		// Name of an element within an array, or
-				// null.
-    int intValue,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array.
+    String name2,       // Name of an element within an array, or
+                // null.
+    int intValue,       // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
     return Var.setVar(this, name1, name2, checkCommonInteger(intValue),
-	    (flags|TCL.LEAVE_ERR_MSG));
+        (flags|TCL.LEAVE_ERR_MSG));
 }
 
 /*
@@ -1390,13 +1390,13 @@ throws
  *
  * setVar --
  *
- *	Set a variable to the value in a double argument.
+ *  Set a variable to the value in a double argument.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1404,20 +1404,20 @@ throws
 public final
 TclObject
 setVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array.
-    String name2,		// Name of an element within an array, or
-				// null.
-    double dValue,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array.
+    String name2,       // Name of an element within an array, or
+                // null.
+    double dValue,      // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
     return Var.setVar(this, name1, name2, checkCommonDouble(dValue),
-	    (flags|TCL.LEAVE_ERR_MSG));
+        (flags|TCL.LEAVE_ERR_MSG));
 }
 
 /*
@@ -1425,13 +1425,13 @@ throws
  *
  * setVar --
  *
- *	Set a variable to the value in a boolean argument.
+ *  Set a variable to the value in a boolean argument.
  *
  * Results:
- *	Returns the new value of the variable.
+ *  Returns the new value of the variable.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
@@ -1439,20 +1439,20 @@ throws
 public final
 TclObject
 setVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array.
-    String name2,		// Name of an element within an array, or
-				// null.
-    boolean bValue,		// New value for variable.
-    int flags)			// Various flags that tell how to set value:
-				// any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
-				// TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array.
+    String name2,       // Name of an element within an array, or
+                // null.
+    boolean bValue,     // New value for variable.
+    int flags)          // Various flags that tell how to set value:
+                // any of TCL.GLOBAL_ONLY, TCL.NAMESPACE_ONLY,
+                // TCL.APPEND_VALUE, or TCL.LIST_ELEMENT.
 throws
     TclException
 {
     return Var.setVar(this, name1, name2, checkCommonBoolean(bValue),
-	    (flags|TCL.LEAVE_ERR_MSG));
+        (flags|TCL.LEAVE_ERR_MSG));
 }
 
 /*
@@ -1460,24 +1460,24 @@ throws
  *
  * getVar --
  *
- *	Get the value of a variable.
+ *  Get the value of a variable.
  *
  * Results:
- *	Returns the value of the variable. If the variable is not defined
+ *  Returns the value of the variable. If the variable is not defined
  *      a TclException will be raised.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 final TclObject 
 getVar(
-    TclObject nameObj,		// The name of a variable, array, or array
-				// element.
-    int flags)			// Various flags that tell how to get value:
-				// any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
+    TclObject nameObj,      // The name of a variable, array, or array
+                // element.
+    int flags)          // Various flags that tell how to get value:
+                // any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
 throws
     TclException 
 {
@@ -1489,24 +1489,24 @@ throws
  *
  * getVar --
  *
- *	Get the value of a variable.
+ *  Get the value of a variable.
  *
  * Results:
- *	Returns the value of the variable. If the variable is not defined
+ *  Returns the value of the variable. If the variable is not defined
  *      a TclException will be raised.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 public final TclObject
 getVar(
-    String name,		// The name of a variable, array, or array
-				// element.
-    int flags)			// Various flags that tell how to get value:
-				// any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
+    String name,        // The name of a variable, array, or array
+                // element.
+    int flags)          // Various flags that tell how to get value:
+                // any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
 throws
     TclException
 {
@@ -1518,27 +1518,27 @@ throws
  *
  * getVar --
  *
- *	Get the value of a variable.
+ *  Get the value of a variable.
  *
  * Results:
- *	Returns the value of the variable. If the variable is not defined
+ *  Returns the value of the variable. If the variable is not defined
  *      a TclException will be raised.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 public final TclObject
 getVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array. 
-    String name2,		// Name of an element within an array, or
-				// null.
-    int flags)			// Flags that tell how to get value:
-				// TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY. 
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array. 
+    String name2,       // Name of an element within an array, or
+                // null.
+    int flags)          // Flags that tell how to get value:
+                // TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY. 
 throws
     TclException
 {
@@ -1550,23 +1550,23 @@ throws
  *
  * unsetVar --
  *
- *	Unset a variable.
+ *  Unset a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 final void
 unsetVar(
-    TclObject nameObj,		// The name of a variable, array, or array
-				// element.
-    int flags)			// Various flags that tell how to get value:
-				// any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
+    TclObject nameObj,      // The name of a variable, array, or array
+                // element.
+    int flags)          // Various flags that tell how to get value:
+                // any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
 throws 
     TclException
 {
@@ -1578,23 +1578,23 @@ throws
  *
  * unsetVar --
  *
- *	Unset a variable.
+ *  Unset a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 public final void
 unsetVar(
-    String name,		// The name of a variable, array, or array
-				// element.
-    int flags)			// Various flags that tell how to get value:
-				// any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
+    String name,        // The name of a variable, array, or array
+                // element.
+    int flags)          // Various flags that tell how to get value:
+                // any of TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY.
 throws 
     TclException 
 {
@@ -1606,26 +1606,26 @@ throws
  *
  * unsetVar --
  *
- *	Unset a variable.
+ *  Unset a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	May trigger traces.
+ *  May trigger traces.
  *
  *----------------------------------------------------------------------
  */
 
 public final void
 unsetVar(
-    String name1,		// If name2 is null, this is name of a scalar
-				// variable. Otherwise it is the name of an
-				// array. 
-    String name2,		// Name of an element within an array, or
-				// null.
-    int flags)			// Flags that tell how to get value:
-				// TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY. 
+    String name1,       // If name2 is null, this is name of a scalar
+                // variable. Otherwise it is the name of an
+                // array. 
+    String name2,       // Name of an element within an array, or
+                // null.
+    int flags)          // Flags that tell how to get value:
+                // TCL.GLOBAL_ONLY or TCL.NAMESPACE_ONLY. 
 throws
     TclException
 {
@@ -1637,27 +1637,27 @@ throws
  *
  * traceVar --
  *
- *	Add a trace to a variable.
+ *  Add a trace to a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 void
 traceVar(
-    TclObject nameObj,		// Name of variable;  may end with "(index)"
-				// to signify an array reference.
-    VarTrace trace,		// Object to notify when specified ops are
-				// invoked upon varName.
-    int flags)			// OR-ed collection of bits, including any
-				// of TCL.TRACE_READS, TCL.TRACE_WRITES,
-				// TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY,
-				// TCL.NAMESPACE_ONLY.
+    TclObject nameObj,      // Name of variable;  may end with "(index)"
+                // to signify an array reference.
+    VarTrace trace,     // Object to notify when specified ops are
+                // invoked upon varName.
+    int flags)          // OR-ed collection of bits, including any
+                // of TCL.TRACE_READS, TCL.TRACE_WRITES,
+                // TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY,
+                // TCL.NAMESPACE_ONLY.
 throws
     TclException
 {
@@ -1669,27 +1669,27 @@ throws
  *
  * traceVar --
  *
- *	Add a trace to a variable.
+ *  Add a trace to a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 traceVar(
-    String name,		// Name of variable;  may end with "(index)"
-				// to signify an array reference.
-    VarTrace trace,		// Object to notify when specified ops are
-				// invoked upon varName.
-    int flags)			// OR-ed collection of bits, including any
-				// of TCL.TRACE_READS, TCL.TRACE_WRITES,
-				// TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY,
-				// TCL.NAMESPACE_ONLY.
+    String name,        // Name of variable;  may end with "(index)"
+                // to signify an array reference.
+    VarTrace trace,     // Object to notify when specified ops are
+                // invoked upon varName.
+    int flags)          // OR-ed collection of bits, including any
+                // of TCL.TRACE_READS, TCL.TRACE_WRITES,
+                // TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY,
+                // TCL.NAMESPACE_ONLY.
 throws
     TclException
 {
@@ -1701,29 +1701,29 @@ throws
  *
  * traceVar --
  *
- *	Add a trace to a variable.
+ *  Add a trace to a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 traceVar(
-    String part1,		// Name of scalar variable or array.
-    String part2,		// Name of element within array;  null means
-				// trace applies to scalar variable or array
-				// as-a-whole.  
-    VarTrace trace,		// Object to notify when specified ops are
-				// invoked upon varName.
-    int flags)			// OR-ed collection of bits, including any
-				// of TCL.TRACE_READS, TCL.TRACE_WRITES,
-				// TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY, and
-				// TCL.NAMESPACE_ONLY.
+    String part1,       // Name of scalar variable or array.
+    String part2,       // Name of element within array;  null means
+                // trace applies to scalar variable or array
+                // as-a-whole.  
+    VarTrace trace,     // Object to notify when specified ops are
+                // invoked upon varName.
+    int flags)          // OR-ed collection of bits, including any
+                // of TCL.TRACE_READS, TCL.TRACE_WRITES,
+                // TCL.TRACE_UNSETS, TCL.GLOBAL_ONLY, and
+                // TCL.NAMESPACE_ONLY.
 throws
     TclException
 {
@@ -1735,26 +1735,26 @@ throws
  *
  * untraceVar --
  *
- *	Remove a trace from a variable.
+ *  Remove a trace from a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 void
 untraceVar(
-    TclObject nameObj,		// Name of variable;  may end with "(index)"
-				// to signify an array reference.
-    VarTrace trace,		// Object associated with trace.
-    int flags)			// OR-ed collection of bits describing current
-				// trace, including any of TCL.TRACE_READS,
-				// TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
-				// TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
+    TclObject nameObj,      // Name of variable;  may end with "(index)"
+                // to signify an array reference.
+    VarTrace trace,     // Object associated with trace.
+    int flags)          // OR-ed collection of bits describing current
+                // trace, including any of TCL.TRACE_READS,
+                // TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
+                // TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
 {
     Var.untraceVar(this, nameObj.toString(), null, flags, trace);
 }
@@ -1764,26 +1764,26 @@ untraceVar(
  *
  * untraceVar --
  *
- *	Remove a trace from a variable.
+ *  Remove a trace from a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 untraceVar(
-    String name,		// Name of variable;  may end with "(index)"
-				// to signify an array reference.
-    VarTrace trace,		// Object associated with trace.
-    int flags)			// OR-ed collection of bits describing current
-				// trace, including any of TCL.TRACE_READS,
-				// TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
-				// TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
+    String name,        // Name of variable;  may end with "(index)"
+                // to signify an array reference.
+    VarTrace trace,     // Object associated with trace.
+    int flags)          // OR-ed collection of bits describing current
+                // trace, including any of TCL.TRACE_READS,
+                // TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
+                // TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
 {
     Var.untraceVar(this, name, null, flags, trace);
 }
@@ -1793,28 +1793,28 @@ untraceVar(
  *
  * untraceVar --
  *
- *	Remove a trace from a variable.
+ *  Remove a trace from a variable.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public void 
 untraceVar(
-    String part1,		// Name of scalar variable or array.
-    String part2,		// Name of element within array;  null means
-				// trace applies to scalar variable or array
-				// as-a-whole.  
-    VarTrace trace,		// Object associated with trace.
-    int flags)			// OR-ed collection of bits describing current
-				// trace, including any of TCL.TRACE_READS,
-				// TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
-				// TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
+    String part1,       // Name of scalar variable or array.
+    String part2,       // Name of element within array;  null means
+                // trace applies to scalar variable or array
+                // as-a-whole.  
+    VarTrace trace,     // Object associated with trace.
+    int flags)          // OR-ed collection of bits describing current
+                // trace, including any of TCL.TRACE_READS,
+                // TCL.TRACE_WRITES, TCL.TRACE_UNSETS,
+                // TCL.GLOBAL_ONLY and TCL.NAMESPACE_ONLY.
 {
     Var.untraceVar(this, part1, part2, flags, trace);
 }
@@ -1824,26 +1824,26 @@ untraceVar(
  *
  * Tcl_CreateCommand -> createCommand
  *
- *	Define a new command in the interpreter.
+ *  Define a new command in the interpreter.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	If a command named cmdName already exists for interp, it is
- *	deleted. In the future, when cmdName is seen as the name of a
- *	command by eval(), cmd will be called. When the command is
- *	deleted from the table, cmd.disposeCmd() be called if cmd
- *	implements the CommandWithDispose interface.
+ *  If a command named cmdName already exists for interp, it is
+ *  deleted. In the future, when cmdName is seen as the name of a
+ *  command by eval(), cmd will be called. When the command is
+ *  deleted from the table, cmd.disposeCmd() be called if cmd
+ *  implements the CommandWithDispose interface.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 createCommand(
-    String cmdName,		// Name of command.
-    Command cmdImpl)		// Command object to associate with
-				// cmdName.
+    String cmdName,     // Name of command.
+    Command cmdImpl)        // Command object to associate with
+                // cmdName.
 {
     ImportRef oldRef = null;
     Namespace ns;
@@ -1852,10 +1852,10 @@ createCommand(
     ImportedCmdData data;
 
     if (deleted) {
-	// The interpreter is being deleted.  Don't create any new
-	// commands; it's not safe to muck with the interpreter anymore.
+    // The interpreter is being deleted.  Don't create any new
+    // commands; it's not safe to muck with the interpreter anymore.
 
-	return;
+    return;
     }
 
     // Determine where the command should reside. If its name contains 
@@ -1863,42 +1863,42 @@ createCommand(
     // otherwise, we always put it in the global namespace.
 
     if (cmdName.indexOf("::") != -1) {
-	Namespace.GetNamespaceForQualNameResult gnfqnr = this.getnfqnResult;
-	Namespace.getNamespaceForQualName(this, cmdName, null,
-		         Namespace.CREATE_NS_IF_UNKNOWN, gnfqnr);
-	ns   = gnfqnr.ns;
-	tail = gnfqnr.simpleName;
+    Namespace.GetNamespaceForQualNameResult gnfqnr = this.getnfqnResult;
+    Namespace.getNamespaceForQualName(this, cmdName, null,
+                 Namespace.CREATE_NS_IF_UNKNOWN, gnfqnr);
+    ns   = gnfqnr.ns;
+    tail = gnfqnr.simpleName;
 
-	if ((ns == null) || (tail == null)) {
-	    return;
-	}
+    if ((ns == null) || (tail == null)) {
+        return;
+    }
     } else {
-	ns =  globalNs;
-	tail = cmdName;
+    ns =  globalNs;
+    tail = cmdName;
     }
 
     cmd = (WrappedCommand) ns.cmdTable.get(tail);
     if (cmd != null) {
-	// Command already exists. Delete the old one.
-	// Be careful to preserve any existing import links so we can
-	// restore them down below.  That way, you can redefine a
-	// command and its import status will remain intact.
+    // Command already exists. Delete the old one.
+    // Be careful to preserve any existing import links so we can
+    // restore them down below.  That way, you can redefine a
+    // command and its import status will remain intact.
 
-	oldRef = cmd.importRef;
-	cmd.importRef = null;
+    oldRef = cmd.importRef;
+    cmd.importRef = null;
 
-	deleteCommandFromToken(cmd);
+    deleteCommandFromToken(cmd);
 
-	// FIXME : create a test case for this condition!
+    // FIXME : create a test case for this condition!
 
-	cmd = (WrappedCommand) ns.cmdTable.get(tail);
-	if (cmd != null) {
-	    // If the deletion callback recreated the command, just throw
+    cmd = (WrappedCommand) ns.cmdTable.get(tail);
+    if (cmd != null) {
+        // If the deletion callback recreated the command, just throw
             // away the new command (if we try to delete it again, we
             // could get stuck in an infinite loop).
-	    
-	    cmd.table.remove(cmd.hashKey);
-	}
+        
+        cmd.table.remove(cmd.hashKey);
+    }
     }
 
     cmd = new WrappedCommand();
@@ -1915,13 +1915,13 @@ createCommand(
     // to update all of these references to point to the new command.
 
     if (oldRef != null) {
-	cmd.importRef = oldRef;
-	while (oldRef != null) {
-	    refCmd = oldRef.importedCmd;
-	    data = (ImportedCmdData) refCmd.cmd;
-	    data.realCmd = cmd;
-	    oldRef = oldRef.next;
-	}
+    cmd.importRef = oldRef;
+    while (oldRef != null) {
+        refCmd = oldRef.importedCmd;
+        data = (ImportedCmdData) refCmd.cmd;
+        data.realCmd = cmd;
+        oldRef = oldRef.next;
+    }
     }
 
     // We just created a command, so in its namespace and all of its parent
@@ -1938,23 +1938,23 @@ createCommand(
  *
  * Tcl_GetCommandFullName -> getCommandFullName
  *
- *	Given a token returned by, e.g., Tcl_CreateCommand or
- *	Tcl_FindCommand, this procedure returns the command's
- *	full name, qualified by a sequence of parent namespace names. The
- *	command's fully-qualified name may have changed due to renaming.
+ *  Given a token returned by, e.g., Tcl_CreateCommand or
+ *  Tcl_FindCommand, this procedure returns the command's
+ *  full name, qualified by a sequence of parent namespace names. The
+ *  command's fully-qualified name may have changed due to renaming.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The command's fully-qualified name is returned.
+ *  The command's fully-qualified name is returned.
  *
  *----------------------------------------------------------------------
  */
 
 public
 String getCommandFullName(
-    WrappedCommand cmd)	        // Token for the command.
+    WrappedCommand cmd)         // Token for the command.
 {
     Interp interp = this;
     StringBuffer name = new StringBuffer();
@@ -1963,15 +1963,15 @@ String getCommandFullName(
     // separator, and the command name.
 
     if (cmd != null) {
-	if (cmd.ns != null) {
-	    name.append(cmd.ns.fullName);
-	    if (cmd.ns != interp.globalNs) {
-		name.append("::");
-	    }
-	}
-	if (cmd.table != null) {
-	    name.append(cmd.hashKey);
-	}
+    if (cmd.ns != null) {
+        name.append(cmd.ns.fullName);
+        if (cmd.ns != interp.globalNs) {
+        name.append("::");
+        }
+    }
+    if (cmd.table != null) {
+        name.append(cmd.hashKey);
+    }
     }
 
     return name.toString();
@@ -1982,29 +1982,29 @@ String getCommandFullName(
  *
  * Tcl_GetCommandName -> getCommandName
  *
- *	Given a token returned by, e.g., Tcl_CreateCommand or
- *	Tcl_FindCommand, this procedure returns the command's
- *	name. The command's fully-qualified name may have changed due to renaming.
+ *  Given a token returned by, e.g., Tcl_CreateCommand or
+ *  Tcl_FindCommand, this procedure returns the command's
+ *  name. The command's fully-qualified name may have changed due to renaming.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The command's name is returned.
+ *  The command's name is returned.
  *
  *----------------------------------------------------------------------
  */
 
 public
 String getCommandName(
-    WrappedCommand cmd)	        // Token for the command.
+    WrappedCommand cmd)         // Token for the command.
 {
     if ((cmd == null) || (cmd.table == null)) {
-	// This should only happen if command was "created" after the
-	// interpreter began to be deleted, so there isn't really any
-	// command. Just return an empty string.
+    // This should only happen if command was "created" after the
+    // interpreter began to be deleted, so there isn't really any
+    // command. Just return an empty string.
 
-	return "";
+    return "";
     }
     return cmd.hashKey;
 }
@@ -2014,36 +2014,36 @@ String getCommandName(
  *
  * Tcl_DeleteCommand -> deleteCommand
  *
- *	Remove the given command from the given interpreter.
+ *  Remove the given command from the given interpreter.
  *
  * Results:
- *	0 is returned if the command was deleted successfully.
- *	-1 is returned if there didn't exist a command by that
- *	name.
+ *  0 is returned if the command was deleted successfully.
+ *  -1 is returned if there didn't exist a command by that
+ *  name.
  *
  * Side effects:
- *	CmdName will no longer be recognized as a valid command for
- *	the interpreter.
+ *  CmdName will no longer be recognized as a valid command for
+ *  the interpreter.
  *
  *----------------------------------------------------------------------
  */
 
 public int
 deleteCommand(
-    String cmdName)		// Name of command to remove.
+    String cmdName)     // Name of command to remove.
 {
     WrappedCommand cmd;
 
     //  Find the desired command and delete it.
 
     try {
-	cmd = Namespace.findCommand(this, cmdName, null, 0);
+    cmd = Namespace.findCommand(this, cmdName, null, 0);
     } catch (TclException e) {
-	// This should never happen
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    // This should never happen
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
     if (cmd == null) {
-	return -1;
+    return -1;
     }
     return deleteCommandFromToken(cmd);
 }
@@ -2053,16 +2053,16 @@ deleteCommand(
  *
  * Tcl_DeleteCommandFromToken -> deleteCommandFromToken
  *
- *	Remove the given command from the given interpreter.
+ *  Remove the given command from the given interpreter.
  *
  * Results:
- *	0 is returned if the command was deleted successfully.
- *	-1 is returned if there didn't exist a command by that
- *	name.
+ *  0 is returned if the command was deleted successfully.
+ *  -1 is returned if there didn't exist a command by that
+ *  name.
  *
  * Side effects:
- *	cmdName will no longer be recognized as a valid command for
- *	the interpreter.
+ *  cmdName will no longer be recognized as a valid command for
+ *  the interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -2072,7 +2072,7 @@ deleteCommandFromToken(
     WrappedCommand cmd)                // Wrapper Token for command to delete.
 {
     if (cmd == null) {
-	return -1;
+    return -1;
     }
 
     ImportRef ref, nextRef;
@@ -2086,21 +2086,21 @@ deleteCommandFromToken(
     // flag allows us to detect these cases and skip nested deletes.
 
     if (cmd.deleted) {
-	// Another deletion is already in progress.  Remove the hash
-	// table entry now, but don't invoke a callback or free the
-	// command structure.
+    // Another deletion is already in progress.  Remove the hash
+    // table entry now, but don't invoke a callback or free the
+    // command structure.
 
-	if (cmd.hashKey != null && cmd.table != null) {
-	    cmd.table.remove(cmd.hashKey);
-	    cmd.table = null;
-	    cmd.hashKey = null;
-	}
-	return 0;
+    if (cmd.hashKey != null && cmd.table != null) {
+        cmd.table.remove(cmd.hashKey);
+        cmd.table = null;
+        cmd.hashKey = null;
+    }
+    return 0;
     }
 
     cmd.deleted = true;
     if (cmd.cmd instanceof CommandWithDispose) {
-	((CommandWithDispose) cmd.cmd).disposeCmd();
+    ((CommandWithDispose) cmd.cmd).disposeCmd();
     }
 
     // Bump the command epoch counter. This will invalidate all cached
@@ -2114,9 +2114,9 @@ deleteCommandFromToken(
 
     for (ref = cmd.importRef;  ref != null;
             ref = nextRef) {
-	nextRef = ref.next;
-	importCmd = ref.importedCmd;
-	deleteCommandFromToken(importCmd);
+    nextRef = ref.next;
+    importCmd = ref.importedCmd;
+    deleteCommandFromToken(importCmd);
     }
 
     // FIXME : what does this mean? Is this a mistake in the C comment?
@@ -2127,9 +2127,9 @@ deleteCommandFromToken(
     // has already deleted the hash entry.
 
     if (cmd.table != null) {
-	cmd.table.remove(cmd.hashKey);
-	cmd.table = null;
-	cmd.hashKey = null;
+    cmd.table.remove(cmd.hashKey);
+    cmd.table = null;
+    cmd.hashKey = null;
     }
 
     // Drop the reference to the Command instance inside the WrappedCommand
@@ -2150,7 +2150,7 @@ deleteCommandFromToken(
  *      old command name and the new command name can have "::" namespace
  *      qualifiers. If the new command has a different namespace context,
  *      the command will be moved to that namespace and will execute in
- *	the context of that new namespace.
+ *  the context of that new namespace.
  *
  *      If the new command name is null or the empty string, the command is
  *      deleted.
@@ -2162,8 +2162,8 @@ deleteCommandFromToken(
  */
 
 protected void renameCommand(
-	          String oldName,    // Existing command name.
-		  String newName)    // New command name.
+              String oldName,    // Existing command name.
+          String newName)    // New command name.
     throws TclException
 {
     Interp interp = this;
@@ -2178,9 +2178,9 @@ protected void renameCommand(
 
     cmd = Namespace.findCommand(interp, oldName, null, 0);
     if (cmd == null) {
-	throw new TclException(interp, "can't " +
-	    (((newName == null)||(newName.length() == 0)) ? "delete" : "rename") +
-	    " \"" + oldName + "\": command doesn't exist");
+    throw new TclException(interp, "can't " +
+        (((newName == null)||(newName.length() == 0)) ? "delete" : "rename") +
+        " \"" + oldName + "\": command doesn't exist");
     }
     cmdNs = cmd.ns;
 
@@ -2188,8 +2188,8 @@ protected void renameCommand(
     // with Tcl_DeleteCommandFromToken, since we already have the command.
     
     if ((newName == null) || (newName.length() == 0)) {
-	deleteCommandFromToken(cmd);
-	return;
+    deleteCommandFromToken(cmd);
+    return;
     }
 
     // Make sure that the destination command does not already exist.
@@ -2204,12 +2204,12 @@ protected void renameCommand(
     newTail = gnfqnr.simpleName;
 
     if ((newNs == null) || (newTail == null)) {
-	throw new TclException(interp,
-	    "can't rename to \"" + newName + "\": bad command name");
+    throw new TclException(interp,
+        "can't rename to \"" + newName + "\": bad command name");
     }
     if (newNs.cmdTable.get(newTail) != null) {
-	throw new TclException(interp,
-	    "can't rename to \"" + newName + "\": command already exists");
+    throw new TclException(interp,
+        "can't rename to \"" + newName + "\": command already exists");
     }
 
     // Warning: any changes done in the code here are likely
@@ -2232,13 +2232,13 @@ protected void renameCommand(
     // the way it was and report the error.
 
     try {
-	interp.preventAliasLoop(interp, cmd);
+    interp.preventAliasLoop(interp, cmd);
     } catch (TclException e) {
-	newNs.cmdTable.remove(newTail);
-	cmd.table   = oldTable;
-	cmd.hashKey = oldHashKey;
-	cmd.ns      = cmdNs;
-	throw e;
+    newNs.cmdTable.remove(newTail);
+    cmd.table   = oldTable;
+    cmd.hashKey = oldHashKey;
+    cmd.ns      = cmdNs;
+    throw e;
     }
 
     // The new command name is okay, so remove the command from its
@@ -2256,27 +2256,27 @@ protected void renameCommand(
  *
  * TclPreventAliasLoop -> preventAliasLoop
  *
- *	When defining an alias or renaming a command, prevent an alias
- *	loop from being formed.
+ *  When defining an alias or renaming a command, prevent an alias
+ *  loop from being formed.
  *
  * Results:
- *	A standard Tcl object result.
+ *  A standard Tcl object result.
  *
  * Side effects:
- *	If TCL_ERROR is returned, the function also stores an error message
- *	in the interpreter's result object.
+ *  If TCL_ERROR is returned, the function also stores an error message
+ *  in the interpreter's result object.
  *
  * NOTE:
- *	This function is public internal (instead of being static to
- *	this file) because it is also used from TclRenameCommand.
+ *  This function is public internal (instead of being static to
+ *  this file) because it is also used from TclRenameCommand.
  *
  *----------------------------------------------------------------------
  */
 
 void
 preventAliasLoop(
-    Interp cmdInterp,		//Interp in which the command is being defined.
-    WrappedCommand cmd)		// Tcl command we are attempting to define.
+    Interp cmdInterp,       //Interp in which the command is being defined.
+    WrappedCommand cmd)     // Tcl command we are attempting to define.
 throws
     TclException
 {
@@ -2295,26 +2295,26 @@ throws
     InterpAliasCmd nextAlias = alias;
     while (true) {
 
-	// If the target of the next alias in the chain is the same as
+    // If the target of the next alias in the chain is the same as
         // the source alias, we have a loop.
 
-	WrappedCommand aliasCmd = nextAlias.getTargetCmd(this);
+    WrappedCommand aliasCmd = nextAlias.getTargetCmd(this);
         if (aliasCmd == null) {
             return;
         }
         if (aliasCmd.cmd == cmd.cmd) {
             throw new TclException(this, "cannot define or rename alias \""
-			  + alias.name + "\": would create a loop");
+              + alias.name + "\": would create a loop");
         }
 
-	// Otherwise, follow the chain one step further. See if the target
-	// command is an alias - if so, follow the loop to its target
-	// command. Otherwise we do not have a loop.
+    // Otherwise, follow the chain one step further. See if the target
+    // command is an alias - if so, follow the loop to its target
+    // command. Otherwise we do not have a loop.
 
-	if (!(aliasCmd.cmd instanceof InterpAliasCmd)) {
+    if (!(aliasCmd.cmd instanceof InterpAliasCmd)) {
             return;
         }
-	nextAlias = (InterpAliasCmd) aliasCmd.cmd;
+    nextAlias = (InterpAliasCmd) aliasCmd.cmd;
     }
 }
 
@@ -2323,31 +2323,31 @@ throws
  *
  * getCommand --
  *
- *	Returns the command procedure of the given command.
+ *  Returns the command procedure of the given command.
  *
  * Results:
- *	The command procedure of the given command, or null if
+ *  The command procedure of the given command, or null if
  *      the command doesn't exist.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public Command
 getCommand(
-    String cmdName) 		// String name of the command.
+    String cmdName)         // String name of the command.
 {
     //  Find the desired command and return it.
 
     WrappedCommand cmd;
 
     try {
-	cmd = Namespace.findCommand(this, cmdName, null, 0);
+    cmd = Namespace.findCommand(this, cmdName, null, 0);
     } catch (TclException e) {
-	// This should never happen
-	throw new TclRuntimeError("unexpected TclException: " + e);
+    // This should never happen
+    throw new TclRuntimeError("unexpected TclException: " + e);
     }
 
     return ((cmd == null) ? null : cmd.cmd);
@@ -2358,21 +2358,21 @@ getCommand(
  *
  * commandComplete --
  *
- *	Check if the string is a complete Tcl command string.
+ *  Check if the string is a complete Tcl command string.
  *
  * Result:
- *	A boolean value indicating whether the string is a complete Tcl
- *	command string.
+ *  A boolean value indicating whether the string is a complete Tcl
+ *  command string.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public static boolean
 commandComplete(
-    String string)		// The string to check.
+    String string)      // The string to check.
 {
     return Parser.commandComplete(string, string.length());
 }
@@ -2380,7 +2380,7 @@ commandComplete(
 
 /*-----------------------------------------------------------------
  *
- *	                     EVAL
+ *                       EVAL
  *
  *-----------------------------------------------------------------
  */
@@ -2391,13 +2391,13 @@ commandComplete(
  *
  * getResult --
  *
- *	Queries the value of the result.
+ *  Queries the value of the result.
  *
  * Results:
- *	The current result in the interpreter.
+ *  The current result in the interpreter.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -2413,16 +2413,16 @@ getResult()
  *
  * setResult --
  *
- *	Arrange for the given Tcl Object to be placed as the result 
- *	object for the interpreter.  Convenience functions are also
- *	available to create a Tcl Object out of the most common Java
- *	types. Note that the ref count for m_nullResult is not changed.
+ *  Arrange for the given Tcl Object to be placed as the result 
+ *  object for the interpreter.  Convenience functions are also
+ *  available to create a Tcl Object out of the most common Java
+ *  types. Note that the ref count for m_nullResult is not changed.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The object result for the interpreter is updated.
+ *  The object result for the interpreter is updated.
  *
  *----------------------------------------------------------------------
  */
@@ -2437,14 +2437,14 @@ setResult(
     }
 
     if (newResult != m_nullResult) {
-	newResult.preserve();
+    newResult.preserve();
     }
 
     TclObject oldResult = m_result;
     m_result = newResult;
 
     if (oldResult != m_nullResult) {
-	oldResult.release();
+    oldResult.release();
     }
 }
 
@@ -2453,23 +2453,23 @@ setResult(
  *
  * setResult --
  *
- *	Arrange for the given Tcl Object to be placed as the result 
- *	object for the interpreter.  Convenience functions are also
- *	available to create a Tcl Object out of the most common Java
- *	types.
+ *  Arrange for the given Tcl Object to be placed as the result 
+ *  object for the interpreter.  Convenience functions are also
+ *  available to create a Tcl Object out of the most common Java
+ *  types.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The object result for the interpreter is updated.
+ *  The object result for the interpreter is updated.
  *
  *----------------------------------------------------------------------
  */
 
 public final void 
 setResult(
-    String r)		// A string result.
+    String r)       // A string result.
 {
     setResult( checkCommonString(r) );
 }
@@ -2479,23 +2479,23 @@ setResult(
  *
  * setResult --
  *
- *	Arrange for the given Tcl Object to be placed as the result 
- *	object for the interpreter.  Convenience functions are also
- *	available to create a Tcl Object out of the most common Java
- *	types.
+ *  Arrange for the given Tcl Object to be placed as the result 
+ *  object for the interpreter.  Convenience functions are also
+ *  available to create a Tcl Object out of the most common Java
+ *  types.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The object result for the interpreter is updated.
+ *  The object result for the interpreter is updated.
  *
  *----------------------------------------------------------------------
  */
 
 public final void 
 setResult(
-    final int r)		// An int result.
+    final int r)        // An int result.
 {
     setResult( checkCommonInteger(r) );
 }
@@ -2505,23 +2505,23 @@ setResult(
  *
  * setResult --
  *
- *	Arrange for the given Tcl Object to be placed as the result 
- *	object for the interpreter.  Convenience functions are also
- *	available to create a Tcl Object out of the most common Java
- *	types.
+ *  Arrange for the given Tcl Object to be placed as the result 
+ *  object for the interpreter.  Convenience functions are also
+ *  available to create a Tcl Object out of the most common Java
+ *  types.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The object result for the interpreter is updated.
+ *  The object result for the interpreter is updated.
  *
  *----------------------------------------------------------------------
  */
 
 public final void 
 setResult(
-    final double r)		// A double result.
+    final double r)     // A double result.
 {
     setResult( checkCommonDouble(r) );
 }
@@ -2531,23 +2531,23 @@ setResult(
  *
  * setResult --
  *
- *	Arrange for the given Tcl Object to be placed as the result 
- *	object for the interpreter.  Convenience functions are also
- *	available to create a Tcl Object out of the most common Java
- *	types.
+ *  Arrange for the given Tcl Object to be placed as the result 
+ *  object for the interpreter.  Convenience functions are also
+ *  available to create a Tcl Object out of the most common Java
+ *  types.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The object result for the interpreter is updated.
+ *  The object result for the interpreter is updated.
  *
  *----------------------------------------------------------------------
  */
 
 public final void 
 setResult(
-    final boolean r)		// A boolean result.
+    final boolean r)        // A boolean result.
 {
     if (VALIDATE_SHARED_RESULTS) {
         setResult( checkCommonBoolean(r) );
@@ -2561,14 +2561,14 @@ setResult(
  *
  * resetResult --
  *
- *	This procedure resets the interpreter's result object.
+ *  This procedure resets the interpreter's result object.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	It resets the result object to an unshared empty object. It 
- *	also clears any error information for the interpreter.
+ *  It resets the result object to an unshared empty object. It 
+ *  also clears any error information for the interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -2577,13 +2577,13 @@ public final void
 resetResult() 
 {
     if (m_result != m_nullResult) {
-	m_result.release();
-	m_result = m_nullResult;
-	if (VALIDATE_SHARED_RESULTS) {
-	    if (!m_nullResult.isShared()) {
-	        throw new TclRuntimeError("m_nullResult is not shared");
-	    }
-	}
+    m_result.release();
+    m_result = m_nullResult;
+    if (VALIDATE_SHARED_RESULTS) {
+        if (!m_nullResult.isShared()) {
+            throw new TclRuntimeError("m_nullResult is not shared");
+        }
+    }
     }
     errAlreadyLogged = false;
     errInProgress = false;
@@ -2596,28 +2596,28 @@ resetResult()
  *
  * Tcl_AppendElement -> Interp.appendElement()
  *
- *	Convert a string to a valid Tcl list element and append it to the
- *	result (which is ostensibly a list).
+ *  Convert a string to a valid Tcl list element and append it to the
+ *  result (which is ostensibly a list).
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The result in the interpreter given by the first argument is
- *	extended with a list element converted from string. A separator
- *	space is added before the converted list element unless the current
- *	result is empty, contains the single character "{", or ends in " {".
+ *  The result in the interpreter given by the first argument is
+ *  extended with a list element converted from string. A separator
+ *  space is added before the converted list element unless the current
+ *  result is empty, contains the single character "{", or ends in " {".
  *
- *	If the string result is empty, the object result is moved to the
- *	string result, then the object result is reset.
+ *  If the string result is empty, the object result is moved to the
+ *  string result, then the object result is reset.
  *
  *----------------------------------------------------------------------
  */
 
 void
 appendElement(
-    String string)		/* String to convert to list element and
-				 * add to result. */
+    String string)      /* String to convert to list element and
+                 * add to result. */
 throws 
     TclException
 {
@@ -2636,36 +2636,36 @@ throws
  *
  * eval --
  *
- *	Execute a Tcl command in a string.
+ *  Execute a Tcl command in a string.
  *
  * Results:
- *	The return value is void.  However, a standard Tcl Exception
- *	may be generated.  The interpreter's result object will contain
- *	the value of the evaluation but will persist only until the next 
- *	call to one of the eval functions.
+ *  The return value is void.  However, a standard Tcl Exception
+ *  may be generated.  The interpreter's result object will contain
+ *  the value of the evaluation but will persist only until the next 
+ *  call to one of the eval functions.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
 
 public void 
 eval(
-    String script)	// A script to evaluate.
+    String script)  // A script to evaluate.
 throws 
-    TclException 	// A standard Tcl exception.
+    TclException    // A standard Tcl exception.
 {
     eval(script, 0);
 }
 
 public void 
 eval(
-    String string,	// A script to evaluate.
-    int flags)		// Flags, either 0 or TCL.EVAL_GLOBAL
+    String string,  // A script to evaluate.
+    int flags)      // Flags, either 0 or TCL.EVAL_GLOBAL
 throws 
-    TclException 	// A standard Tcl exception.
+    TclException    // A standard Tcl exception.
 {
     if (string == null) {
         throw new NullPointerException("passed null String to eval()");
@@ -2676,31 +2676,31 @@ throws
 
     CharPointer script = new CharPointer(string);
     try {
-	Parser.eval2(this, script.array, script.index, script.length(), flags);
+    Parser.eval2(this, script.array, script.index, script.length(), flags);
     } catch (TclException e) {
 
-	if (nestLevel != 0) {
-	    throw e;
-	}
+    if (nestLevel != 0) {
+        throw e;
+    }
 
-	// Update the interpreter's evaluation level count. If we are again at
-	// the top level, process any unusual return code returned by the
-	// evaluated code. Note that we don't propagate an exception that
-	// has a TCL.RETURN error code when updateReturnInfo() returns TCL.OK.
+    // Update the interpreter's evaluation level count. If we are again at
+    // the top level, process any unusual return code returned by the
+    // evaluated code. Note that we don't propagate an exception that
+    // has a TCL.RETURN error code when updateReturnInfo() returns TCL.OK.
 
-	int result = e.getCompletionCode();
+    int result = e.getCompletionCode();
 
-	if (result == TCL.RETURN) {
-	    result = updateReturnInfo();
-	}
-	if (result != TCL.OK && result != TCL.ERROR
-	    && (evalFlags & Parser.TCL_ALLOW_EXCEPTIONS) == 0) {
-	    processUnexpectedResult(result);
-	}
-	if (result != TCL.OK) {
-	    e.setCompletionCode(result);
-	    throw e;
-	}
+    if (result == TCL.RETURN) {
+        result = updateReturnInfo();
+    }
+    if (result != TCL.OK && result != TCL.ERROR
+        && (evalFlags & Parser.TCL_ALLOW_EXCEPTIONS) == 0) {
+        processUnexpectedResult(result);
+    }
+    if (result != TCL.OK) {
+        e.setCompletionCode(result);
+        throw e;
+    }
     } finally {
         checkInterrupted();
     }
@@ -2711,27 +2711,27 @@ throws
  *
  * Tcl_EvalObjEx -> eval
  *
- *	Execute a Tcl command in a TclObject.
+ *  Execute a Tcl command in a TclObject.
  *
  * Results:
- *	The return value is void.  However, a standard Tcl Exception
- *	may be generated.  The interpreter's result object will contain
- *	the value of the evaluation but will persist only until the next 
- *	call to one of the eval functions.
+ *  The return value is void.  However, a standard Tcl Exception
+ *  may be generated.  The interpreter's result object will contain
+ *  the value of the evaluation but will persist only until the next 
+ *  call to one of the eval functions.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
 
 public void 
 eval(
-    TclObject tobj,	// A Tcl object holding a script to evaluate.
-    int flags)		// Flags, either 0 or TCL.EVAL_GLOBAL
+    TclObject tobj, // A Tcl object holding a script to evaluate.
+    int flags)      // Flags, either 0 or TCL.EVAL_GLOBAL
 throws 
-    TclException 	// A standard Tcl exception.
+    TclException    // A standard Tcl exception.
 {
     boolean isPureList = false;
 
@@ -2852,18 +2852,18 @@ throws
  *
  * Tcl_RecordAndEvalObj -> recordAndEval
  *
- *	This procedure adds its command argument to the current list of
- *	recorded events and then executes the command by calling eval.
+ *  This procedure adds its command argument to the current list of
+ *  recorded events and then executes the command by calling eval.
  *
  * Results:
- *	The return value is void.  However, a standard Tcl Exception
- *	may be generated.  The interpreter's result object will contain
- *	the value of the evaluation but will persist only until the next 
- *	call to one of the eval functions.
+ *  The return value is void.  However, a standard Tcl Exception
+ *  may be generated.  The interpreter's result object will contain
+ *  the value of the evaluation but will persist only until the next 
+ *  call to one of the eval functions.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
@@ -2877,7 +2877,7 @@ recordAndEval(
                         // script in global variable context instead
                         // of the current procedure.
 throws
-    TclException 	// A standard Tcl exception.
+    TclException    // A standard Tcl exception.
 {
     // Append the script to the event list by calling "history add <script>".
     // We call the eval method with the command of type TclObject, so that
@@ -2885,11 +2885,11 @@ throws
 
     TclObject cmd = null;
     try {
-	cmd = TclList.newInstance();
-	TclList.append(this, cmd, TclString.newInstance("history"));
-	TclList.append(this, cmd, TclString.newInstance("add"));
-	TclList.append(this, cmd, script);
-	eval(cmd, TCL.EVAL_GLOBAL);
+    cmd = TclList.newInstance();
+    TclList.append(this, cmd, TclString.newInstance("history"));
+    TclList.append(this, cmd, TclString.newInstance("add"));
+    TclList.append(this, cmd, script);
+    eval(cmd, TCL.EVAL_GLOBAL);
     } catch (Exception e) {
         // No-op
     }
@@ -2897,7 +2897,7 @@ throws
     // Execute the command.
 
     if ((flags & TCL.NO_EVAL) == 0) {
-	eval(script, flags & TCL.EVAL_GLOBAL);
+    eval(script, flags & TCL.EVAL_GLOBAL);
     }
 }
 
@@ -2905,48 +2905,48 @@ throws
  *----------------------------------------------------------------------
  *
  * evalFile --
- *	Loads a Tcl script from a file and evaluates it in the
- * 	current interpreter.
+ *  Loads a Tcl script from a file and evaluates it in the
+ *  current interpreter.
  *
  * Results:
- * 	None.
+ *  None.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 evalFile(
-    String s)			// The name of file to evaluate.
+    String s)           // The name of file to evaluate.
 throws 
     TclException
 {
-    String fileContent;		// Contains the content of the file.
+    String fileContent;     // Contains the content of the file.
 
     fileContent = readScriptFromFile(s);
 
     if (fileContent == null) {
-	throw new TclException(this, "couldn't read file \"" + s + "\"");
+    throw new TclException(this, "couldn't read file \"" + s + "\"");
     }
 
     String oldScript = scriptFile;
     scriptFile = s;
 
     try {
-	pushDebugStack(s, 1);
-	eval(fileContent, 0);
+    pushDebugStack(s, 1);
+    eval(fileContent, 0);
     } catch (TclException e) {
-	if( e.getCompletionCode() == TCL.ERROR ) {
-	    addErrorInfo("\n    (file \"" + s + "\" line " 
-			 + errorLine + ")");
-	}
-	throw e;
+    if( e.getCompletionCode() == TCL.ERROR ) {
+        addErrorInfo("\n    (file \"" + s + "\" line " 
+             + errorLine + ")");
+    }
+    throw e;
     } finally {
-	scriptFile = oldScript;
-	popDebugStack();
+    scriptFile = oldScript;
+    popDebugStack();
     }
 }
 
@@ -2955,41 +2955,41 @@ throws
  *
  * evalURL --
  *
- *	Loads a Tcl script from a URL and evaluate it in the
- *	current interpreter.
+ *  Loads a Tcl script from a URL and evaluate it in the
+ *  current interpreter.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
 
 void
 evalURL(
-    URL context, 		// URL context under which s is interpreted.
-    String s)  			// The name of URL.
+    URL context,        // URL context under which s is interpreted.
+    String s)           // The name of URL.
 throws 
     TclException
 {
-    String fileContent;		// Contains the content of the file.
+    String fileContent;     // Contains the content of the file.
 
     fileContent = readScriptFromURL(context, s);
     if (fileContent == null) {
-	throw new TclException(this, "cannot read URL \"" + s + "\"");
+    throw new TclException(this, "cannot read URL \"" + s + "\"");
     }
 
     String oldScript = scriptFile;
     scriptFile = s;
 
     try {
-	eval(fileContent, 0);
+    eval(fileContent, 0);
     }
     finally {
-	scriptFile = oldScript;
+    scriptFile = oldScript;
     }
 }
 
@@ -2998,20 +2998,20 @@ throws
  *
  * readScriptFromFile --
  *
- *	Read the script file into a string.
+ *  Read the script file into a string.
  *
  * Results:
- *	Returns the content of the script file.
+ *  Returns the content of the script file.
  *
  * Side effects:
- *	If a new File object cannot be created for s, the result is reset.
+ *  If a new File object cannot be created for s, the result is reset.
  *
  *----------------------------------------------------------------------
  */
 
 private String
 readScriptFromFile(
-    String s)			// The name of the file.
+    String s)           // The name of the file.
 {
     File sourceFile;
     FileChannel fchan = new FileChannel();
@@ -3045,72 +3045,72 @@ readScriptFromFile(
  *
  * readScriptFromURL --
  *
- *	Read the script file into a string, treating the file as 
- *	an URL.
+ *  Read the script file into a string, treating the file as 
+ *  an URL.
  *
  * Results:
- *	The content of the script file.
+ *  The content of the script file.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 private String
 readScriptFromURL(
-    URL context, 	// Use as the URL context if s is a relative URL.
-    String s)		// ???
+    URL context,    // Use as the URL context if s is a relative URL.
+    String s)       // ???
 {
     Object content = null;
     URL url;
 
     try {
-	url = new URL(context, s);
+    url = new URL(context, s);
     }
     catch (MalformedURLException e) {
-	return null;
+    return null;
     }
 
     try {
-	content = url.getContent();
+    content = url.getContent();
     }
     catch (UnknownServiceException e) {
-	Class jar_class;
+    Class jar_class;
 
-	try {
-	    // Load JarURLConnection via the system class loader
-	    jar_class = Class.forName("java.net.JarURLConnection");
-	} catch (Exception e2) {
-	    return null;
-	}
+    try {
+        // Load JarURLConnection via the system class loader
+        jar_class = Class.forName("java.net.JarURLConnection");
+    } catch (Exception e2) {
+        return null;
+    }
 
-	Object jar;
-	try {
-	    jar = url.openConnection();
-	} catch (IOException e2) {
-	    return null;
-	}
+    Object jar;
+    try {
+        jar = url.openConnection();
+    } catch (IOException e2) {
+        return null;
+    }
 
-	if ( jar == null ) {
-	    return null;
-	}
-	
-	// We must call JarURLConnection.getInputStream() dynamically
-	// Because the class JarURLConnection does not exist in JDK1.1
-	
-	try {
-	    Method m = jar_class.getMethod("openConnection",null);
-	    content = m.invoke(jar,null);
-	} catch (Exception e2) {
-	    return null;
-	}
+    if ( jar == null ) {
+        return null;
+    }
+    
+    // We must call JarURLConnection.getInputStream() dynamically
+    // Because the class JarURLConnection does not exist in JDK1.1
+    
+    try {
+        Method m = jar_class.getMethod("openConnection",null);
+        content = m.invoke(jar,null);
+    } catch (Exception e2) {
+        return null;
+    }
     }
     catch (IOException e) {
-	return null;
+    return null;
     }
     catch (SecurityException e) {
-	return null;
+    return null;
     }
 
     if (content instanceof String) {
@@ -3118,7 +3118,7 @@ readScriptFromURL(
     } else if (content instanceof InputStream) {
         return readScriptFromInputStream((InputStream) content);
     } else {
-	return null;
+    return null;
     }
 }
 
@@ -3127,19 +3127,19 @@ readScriptFromURL(
  *
  * convertStringCRLF --
  *
- *	Convert CRLF sequences into LF sequences in a String.
+ *  Convert CRLF sequences into LF sequences in a String.
  *
  * Results:
  *      A new string with LF instead of CRLF.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 String
 convertStringCRLF(
-    String inStr)			// String that could contain CRLFs
+    String inStr)           // String that could contain CRLFs
 {
     String str = inStr;
     StringBuffer sb = new StringBuffer(str.length());
@@ -3171,20 +3171,20 @@ convertStringCRLF(
  *
  * readScriptFromInputStream --
  *
- *	Read a script from a Java InputStream into a string.
+ *  Read a script from a Java InputStream into a string.
  *
  * Results:
- *	Returns the content of the script.
+ *  Returns the content of the script.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 private String
 readScriptFromInputStream(
-    InputStream s)			// Java InputStream containing script
+    InputStream s)          // Java InputStream containing script
 {
     TclObject result = TclString.newInstance(new StringBuffer(64));
     ReadInputStreamChannel rc = new ReadInputStreamChannel(this, s);
@@ -3213,13 +3213,13 @@ readScriptFromInputStream(
  *
  * closeInputStream --
  *
- *	Close the InputStream; catch any IOExceptions and ignore them.
+ *  Close the InputStream; catch any IOExceptions and ignore them.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -3229,7 +3229,7 @@ closeInputStream(
     InputStream fs)
 {
     try {
-	fs.close();
+    fs.close();
     }
     catch (IOException e) {;}
 }
@@ -3239,13 +3239,13 @@ closeInputStream(
  *
  * closeChannel --
  *
- *	Close the Channel; catch any IOExceptions and ignore them.
+ *  Close the Channel; catch any IOExceptions and ignore them.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -3255,7 +3255,7 @@ closeChannel(
     Channel chan)
 {
     try {
-	chan.close();
+    chan.close();
     }
     catch (IOException e) {}
 }
@@ -3265,17 +3265,17 @@ closeChannel(
  *
  * evalResource --
  *
- *	Execute a Tcl script stored in the given Java resource location.
+ *  Execute a Tcl script stored in the given Java resource location.
  *
  * Results:
- *	The return value is void.  However, a standard Tcl Exception
- *	may be generated. The interpreter's result object will contain
- *	the value of the evaluation but will persist only until the next 
- *	call to one of the eval functions.
+ *  The return value is void.  However, a standard Tcl Exception
+ *  may be generated. The interpreter's result object will contain
+ *  the value of the evaluation but will persist only until the next 
+ *  call to one of the eval functions.
  *
  * Side effects:
- *	The side effects will be determined by the exact Tcl code to be 
- *	evaluated.
+ *  The side effects will be determined by the exact Tcl code to be 
+ *  evaluated.
  *
  *----------------------------------------------------------------------
  */
@@ -3283,10 +3283,10 @@ closeChannel(
 public
 void
 evalResource(
-    String resName) 	// The location of the Java resource. See
-			// the Java documentation of
-			// Class.getResourceAsStream()
-			// for details on resource naming.
+    String resName)     // The location of the Java resource. See
+            // the Java documentation of
+            // Class.getResourceAsStream()
+            // for details on resource naming.
 throws 
     TclException
 {
@@ -3397,17 +3397,17 @@ throws
  *
  * backslash --
  *
- *	Figure out how to handle a backslash sequence.  The index
- *	of the ChapPointer must be pointing to the first /.
+ *  Figure out how to handle a backslash sequence.  The index
+ *  of the ChapPointer must be pointing to the first /.
  *
  * Results:
- *	The return value is an instance of BackSlashResult that 
- *	contains the character that should be substituted in place 
- *	of the backslash sequence that starts at src.index, and
- *	an index to the next character after the backslash sequence.
+ *  The return value is an instance of BackSlashResult that 
+ *  contains the character that should be substituted in place 
+ *  of the backslash sequence that starts at src.index, and
+ *  an index to the next character after the backslash sequence.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -3430,37 +3430,37 @@ backslash(
  *
  * setErrorCode --
  *
- *	This procedure is called to record machine-readable information
- *	about an error that is about to be returned. The caller should
- *	build a list object up and pass it to this routine.
+ *  This procedure is called to record machine-readable information
+ *  about an error that is about to be returned. The caller should
+ *  build a list object up and pass it to this routine.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The errorCode global variable is modified to be the new value.
- *	A flag is set internally to remember that errorCode has been
- *	set, so the variable doesn't get set automatically when the
- *	error is returned.
+ *  The errorCode global variable is modified to be the new value.
+ *  A flag is set internally to remember that errorCode has been
+ *  set, so the variable doesn't get set automatically when the
+ *  error is returned.
  *
- *	If the errorCode variable have write traces, any arbitrary side
- *	effects may happen in those traces. TclException's caused by the
- *	traces, however, are ignored and not passed back to the caller
- *	of this function.
+ *  If the errorCode variable have write traces, any arbitrary side
+ *  effects may happen in those traces. TclException's caused by the
+ *  traces, however, are ignored and not passed back to the caller
+ *  of this function.
  *
  *----------------------------------------------------------------------
  */
 public void
 setErrorCode(
-    TclObject code)		// The errorCode object.
+    TclObject code)     // The errorCode object.
 {
     try {
-	setVar("errorCode", null, code, TCL.GLOBAL_ONLY);
-	errCodeSet = true;
+    setVar("errorCode", null, code, TCL.GLOBAL_ONLY);
+    errCodeSet = true;
     } catch (TclException excp) {
-	// Ignore any TclException's, possibly caused by variable traces on
-	// the errorCode variable. This is compatible with the behavior of
-	// the Tcl C API.
+    // Ignore any TclException's, possibly caused by variable traces on
+    // the errorCode variable. This is compatible with the behavior of
+    // the Tcl C API.
     }
 }
 
@@ -3471,58 +3471,58 @@ setErrorCode(
  *
  * addErrorInfo --
  *
- *	Add information to the "errorInfo" variable that describes the
- *	current error.
+ *  Add information to the "errorInfo" variable that describes the
+ *  current error.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The contents of message are added to the "errorInfo" variable.
- *	If eval() has been called since the current value of errorInfo
- *	was set, errorInfo is cleared before adding the new message.
- *	If we are just starting to log an error, errorInfo is initialized
- *	from the error message in the interpreter's result.
+ *  The contents of message are added to the "errorInfo" variable.
+ *  If eval() has been called since the current value of errorInfo
+ *  was set, errorInfo is cleared before adding the new message.
+ *  If we are just starting to log an error, errorInfo is initialized
+ *  from the error message in the interpreter's result.
  *
- *	If the errorInfo variable have write traces, any arbitrary side
- *	effects may happen in those traces. TclException's caused by the
- *	traces, however, are ignored and not passed back to the caller
- *	of this function.
+ *  If the errorInfo variable have write traces, any arbitrary side
+ *  effects may happen in those traces. TclException's caused by the
+ *  traces, however, are ignored and not passed back to the caller
+ *  of this function.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 addErrorInfo(
-    String message)		// The message to record.
+    String message)     // The message to record.
 {
     if (!errInProgress) {
-	errInProgress = true;
+    errInProgress = true;
 
-	try {
-	    setVar("errorInfo", null, getResult().toString(),
-		   TCL.GLOBAL_ONLY);
-	} catch (TclException e1) {
-	    // Ignore (see try-block above).
-	}
+    try {
+        setVar("errorInfo", null, getResult().toString(),
+           TCL.GLOBAL_ONLY);
+    } catch (TclException e1) {
+        // Ignore (see try-block above).
+    }
 
-	// If the errorCode variable wasn't set by the code
-	// that generated the error, set it to "NONE".
+    // If the errorCode variable wasn't set by the code
+    // that generated the error, set it to "NONE".
 
-	if (!errCodeSet) {
-	    try {
-		setVar("errorCode", null, "NONE", TCL.GLOBAL_ONLY);
-	    } catch (TclException e1) {
-		// Ignore (see try-block above).
-	    }
-	}
+    if (!errCodeSet) {
+        try {
+        setVar("errorCode", null, "NONE", TCL.GLOBAL_ONLY);
+        } catch (TclException e1) {
+        // Ignore (see try-block above).
+        }
+    }
     }
 
     try {
-	setVar("errorInfo", null, message,
-		TCL.APPEND_VALUE|TCL.GLOBAL_ONLY);
+    setVar("errorInfo", null, message,
+        TCL.APPEND_VALUE|TCL.GLOBAL_ONLY);
     }  catch (TclException e1) {
-	// Ignore (see try-block above).
+    // Ignore (see try-block above).
     }
 }
 
@@ -3531,17 +3531,17 @@ addErrorInfo(
  *
  * ProcessUnexpectedResult -> processUnexpectedResult
  *
- *	Procedure called by Tcl_EvalObj to set the interpreter's result
- *	value to an appropriate error message when the code it evaluates
- *	returns an unexpected result code (not TCL_OK and not TCL_ERROR) to
- *	the topmost evaluation level.
+ *  Procedure called by Tcl_EvalObj to set the interpreter's result
+ *  value to an appropriate error message when the code it evaluates
+ *  returns an unexpected result code (not TCL_OK and not TCL_ERROR) to
+ *  the topmost evaluation level.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The interpreter result is set to an error message appropriate to
- *	the result code.
+ *  The interpreter result is set to an error message appropriate to
+ *  the result code.
  *
  *----------------------------------------------------------------------
  */
@@ -3549,18 +3549,18 @@ addErrorInfo(
 public
 void
 processUnexpectedResult(
-    int returnCode)		// The unexpected result code.
+    int returnCode)     // The unexpected result code.
 throws 
-    TclException 	// A standard Tcl exception.
+    TclException    // A standard Tcl exception.
 {
     resetResult();
     if (returnCode == TCL.BREAK) {
-	throw new TclException(this, "invoked \"break\" outside of a loop");
+    throw new TclException(this, "invoked \"break\" outside of a loop");
     } else if (returnCode == TCL.CONTINUE) {
-	throw new TclException(this, "invoked \"continue\" outside of a loop");
+    throw new TclException(this, "invoked \"continue\" outside of a loop");
     } else {
-	throw new TclException(this,
-		      "command returned bad code: " + returnCode);
+    throw new TclException(this,
+              "command returned bad code: " + returnCode);
     }
 }
 
@@ -3569,23 +3569,23 @@ throws
  *
  * TclUpdateReturnInfo -> updateReturnInfo
  *
- *	This method is used by various parts of the Jacl and external packages.
- *	interpreter when a TclException of TCL.RETURN is received. The
- *	most common case is when the "return" command is executed
- *	inside a Tcl procedure. This method examines fields such as
- *	interp.returnCode and interp.errorCode and determines the real
- *	return status of the Tcl procedure accordingly.
+ *  This method is used by various parts of the Jacl and external packages.
+ *  interpreter when a TclException of TCL.RETURN is received. The
+ *  most common case is when the "return" command is executed
+ *  inside a Tcl procedure. This method examines fields such as
+ *  interp.returnCode and interp.errorCode and determines the real
+ *  return status of the Tcl procedure accordingly.
  *
  * Results:
- *	The return value is the true completion code to use for
- *	the Tcl procedure, instead of TCL.RETURN. It's the same
- *	value that was given to the "return -code" option.
+ *  The return value is the true completion code to use for
+ *  the Tcl procedure, instead of TCL.RETURN. It's the same
+ *  value that was given to the "return -code" option.
  *
- *	If TCL.OK is returned, it means than the caller of this method should
- *	ignore any TclException that it has received.
+ *  If TCL.OK is returned, it means than the caller of this method should
+ *  ignore any TclException that it has received.
  *
  * Side effects:
- *	The errorInfo and errorCode variables may get modified.
+ *  The errorInfo and errorCode variables may get modified.
  *
  *----------------------------------------------------------------------
  */
@@ -3599,27 +3599,27 @@ updateReturnInfo()
     returnCode = TCL.OK;
 
     if (code == TCL.ERROR) {
-	try {
-	    setVar("errorCode", null, (errorCode != null) ? errorCode : "NONE",
-		    TCL.GLOBAL_ONLY);
-	} catch (TclException e) {
-	    // An error may happen during a trace to errorCode. We ignore it.
-	    // This may leave error messages inside Interp.result (which
-	    // is compatible with Tcl 8.0 behavior.
-	}
-	errCodeSet = true;
+    try {
+        setVar("errorCode", null, (errorCode != null) ? errorCode : "NONE",
+            TCL.GLOBAL_ONLY);
+    } catch (TclException e) {
+        // An error may happen during a trace to errorCode. We ignore it.
+        // This may leave error messages inside Interp.result (which
+        // is compatible with Tcl 8.0 behavior.
+    }
+    errCodeSet = true;
 
-	if (errorInfo != null) {
-	    try {
-		setVar("errorInfo", null, errorInfo, TCL.GLOBAL_ONLY);
-	    } catch (TclException e) {
-		// An error may happen during a trace to errorInfo. We
-		// ignore it.  This may leave error messages inside
-		// Interp.result (which is compatible with Tcl 8.0
-		// behavior.
-	    }
-	    errInProgress = true;
-	}
+    if (errorInfo != null) {
+        try {
+        setVar("errorInfo", null, errorInfo, TCL.GLOBAL_ONLY);
+        } catch (TclException e) {
+        // An error may happen during a trace to errorInfo. We
+        // ignore it.  This may leave error messages inside
+        // Interp.result (which is compatible with Tcl 8.0
+        // behavior.
+        }
+        errInProgress = true;
+    }
     }
 
     return code;
@@ -3630,25 +3630,25 @@ updateReturnInfo()
  *
  * newCallFrame --
  *
- *	Creates a new callframe. This method can be overrided to 
- *	provide debugging support.
+ *  Creates a new callframe. This method can be overrided to 
+ *  provide debugging support.
  *
  * Results:
- *	A new CallFrame.
+ *  A new CallFrame.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 protected CallFrame
 newCallFrame(
-    Procedure proc, 		// The procedure which will later be 
-				// execute inside the new callframe.
-    TclObject[] objv)  		// The arguments to pass to the procedure.
+    Procedure proc,         // The procedure which will later be 
+                // execute inside the new callframe.
+    TclObject[] objv)       // The arguments to pass to the procedure.
 throws 
-    TclException 		// Incorrect number of arguments passed.
+    TclException        // Incorrect number of arguments passed.
 {
     return new CallFrame(this, proc, objv);
 }
@@ -3658,14 +3658,14 @@ throws
  *
  * newCallFrame --
  *
- *	Creates a new callframe. This method can be overrided to 
- *	provide debugging support.
+ *  Creates a new callframe. This method can be overrided to 
+ *  provide debugging support.
  *
  * Results:
- *	A new CallFrame.
+ *  A new CallFrame.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -3681,13 +3681,13 @@ newCallFrame()
  *
  * getWorkingDir --
  *
- *	Retrieve the current working directory for this interpreter.
+ *  Retrieve the current working directory for this interpreter.
  *
  * Results:
- *	Returns the File for the directory.
+ *  Returns the File for the directory.
  *
  * Side effects:
- *	If the working dir is null, set it.
+ *  If the working dir is null, set it.
  *
  *----------------------------------------------------------------------
  */
@@ -3696,13 +3696,13 @@ File
 getWorkingDir()
 {
     if (workingDir == null) {
-	try {
-	    String dirName = getVar("env", "HOME", 0).toString();
-	    workingDir = FileUtil.getNewFileObj(this, dirName);
-	} catch(TclException e) {
-	    resetResult();
-	}
-	workingDir = new File(Util.tryGetSystemProperty("user.home", "."));
+    try {
+        String dirName = getVar("env", "HOME", 0).toString();
+        workingDir = FileUtil.getNewFileObj(this, dirName);
+    } catch(TclException e) {
+        resetResult();
+    }
+    workingDir = new File(Util.tryGetSystemProperty("user.home", "."));
     }
     return workingDir;
 }
@@ -3712,13 +3712,13 @@ getWorkingDir()
  *
  * setWorkingDir --
  *
- *	Set the current working directory for this interpreter.
+ *  Set the current working directory for this interpreter.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	Set the working directory or throw a TclException.
+ *  Set the working directory or throw a TclException.
  *
  *----------------------------------------------------------------------
  */
@@ -3734,13 +3734,13 @@ throws
     //  Use the canonical name of the path, if possible.
 
     try {
-	dirObj = new File(dirObj.getCanonicalPath());
+    dirObj = new File(dirObj.getCanonicalPath());
     } catch (IOException e) {
     }
 
 
     if (dirObj.isDirectory()) {
-	workingDir = dirObj;
+    workingDir = dirObj;
     } else {
         String dname = FileUtil.translateFileName(this, dirName);
         if (FileUtil.getPathType(dname) == FileUtil.PATH_RELATIVE) {
@@ -3748,8 +3748,8 @@ throws
         } else {
             dname = dirObj.getPath();
         }
-	throw new TclException(this, 
-		"couldn't change working directory to \""
+    throw new TclException(this, 
+        "couldn't change working directory to \""
                 + dname + "\": no such file or directory");
     }    
 }
@@ -3759,18 +3759,18 @@ throws
  *
  * getNotifier --
  *
- *	Retrieve the Notifier associated with this Interp.
- *	This method can safely be invoked from a thread
- *	other than the thread the Interp was created in.
- *	If this method is invoked after the Interp object
- *	has been disposed of then null will be returned.
+ *  Retrieve the Notifier associated with this Interp.
+ *  This method can safely be invoked from a thread
+ *  other than the thread the Interp was created in.
+ *  If this method is invoked after the Interp object
+ *  has been disposed of then null will be returned.
  *
  * Results:
- *	Returns the Notifier for the thread the interp was
- *	created in.
+ *  Returns the Notifier for the thread the interp was
+ *  created in.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -3786,19 +3786,19 @@ getNotifier()
  *
  * pkgProvide --
  *
- *	This procedure is invoked to declare that a particular version
- *	of a particular package is now present in an interpreter.  There
- *	must not be any other version of this package already
- *	provided in the interpreter.
+ *  This procedure is invoked to declare that a particular version
+ *  of a particular package is now present in an interpreter.  There
+ *  must not be any other version of this package already
+ *  provided in the interpreter.
  *
  * Results:
- *	Normally does nothing; if there is already another version
- *	of the package loaded then an error is raised.
+ *  Normally does nothing; if there is already another version
+ *  of the package loaded then an error is raised.
  *
  * Side effects:
- *	The interpreter remembers that this package is available,
- *	so that no other version of the package may be provided for
- *	the interpreter.
+ *  The interpreter remembers that this package is available,
+ *  so that no other version of the package may be provided for
+ *  the interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -3818,25 +3818,25 @@ throws
  *
  * pkgRequire --
  *
- *	This procedure is called by code that depends on a particular
- *	version of a particular package.  If the package is not already
- *	provided in the interpreter, this procedure invokes a Tcl script
- *	to provide it.  If the package is already provided, this
- *	procedure makes sure that the caller's needs don't conflict with
- *	the version that is present.
+ *  This procedure is called by code that depends on a particular
+ *  version of a particular package.  If the package is not already
+ *  provided in the interpreter, this procedure invokes a Tcl script
+ *  to provide it.  If the package is already provided, this
+ *  procedure makes sure that the caller's needs don't conflict with
+ *  the version that is present.
  *
  * Results:
- *	If successful, returns the version string for the currently
- *	provided version of the package, which may be different from
- *	the "version" argument.  If the caller's requirements
- *	cannot be met (e.g. the version requested conflicts with
- *	a currently provided version, or the required version cannot
- *	be found, or the script to provide the required version
- *	generates an error), a TclException is raised.
+ *  If successful, returns the version string for the currently
+ *  provided version of the package, which may be different from
+ *  the "version" argument.  If the caller's requirements
+ *  cannot be met (e.g. the version requested conflicts with
+ *  a currently provided version, or the required version cannot
+ *  be found, or the script to provide the required version
+ *  generates an error), a TclException is raised.
  *
  * Side effects:
- *	The script from some previous "package ifneeded" command may
- *	be invoked to provide the package.
+ *  The script from some previous "package ifneeded" command may
+ *  be invoked to provide the package.
  *
  *----------------------------------------------------------------------
  */
@@ -3860,26 +3860,26 @@ throws
  *
  * - pushDebugStack() is called when a procedure body is
  *       executed, or when a file is source'd.
- *	   - popDebugStack() is called when the flow of control is about
+ *     - popDebugStack() is called when the flow of control is about
  *       to return from a procedure body, or from a source'd file.
  *
  * Two other API functions are used to determine the current point of
  * execution:
  *
- *	   - getScriptFile() returns the script file current being executed.
- *	   - getArgLineNumber(i) returns the line number of the i-th argument
- *	     of the current command.
+ *     - getScriptFile() returns the script file current being executed.
+ *     - getArgLineNumber(i) returns the line number of the i-th argument
+ *       of the current command.
  *
  * Note: The point of execution is automatically maintained for
  *       control structures such as while, if, for and foreach,
- *	     as long as they use Interp.eval(argv[?]) to evaluate control
- *	     blocks.
- *	    
- *	     The case and switch commands need to set dbg.cmdLine explicitly
- *	     because they may evaluate control blocks that are not elements
- *	     inside the argv[] array. ** This feature not yet implemented. **
+ *       as long as they use Interp.eval(argv[?]) to evaluate control
+ *       blocks.
+ *      
+ *       The case and switch commands need to set dbg.cmdLine explicitly
+ *       because they may evaluate control blocks that are not elements
+ *       inside the argv[] array. ** This feature not yet implemented. **
  *
- *	     The proc command needs to call getScriptFile() and
+ *       The proc command needs to call getScriptFile() and
  *       getArgLineNumber(3) to find out the location of the proc
  *       body.
  *
@@ -3906,7 +3906,7 @@ initDebugInfo()
  *
  * @param fileName the filename for the new stack level
  * @param lineNumber the line number at which the execution of the
- *	   new stack level begins.
+ *     new stack level begins.
  */
 void pushDebugStack(
     String fileName, 
@@ -3937,7 +3937,7 @@ String getScriptFile()
  * Returns the line number where the given command argument begins. E.g, if
  * the following command is at line 10:
  *
- *	foo {a
+ *  foo {a
  *      b } c
  *
  * getArgLine(0) = 10
@@ -3959,39 +3959,39 @@ getArgLineNumber(
  *
  * TclTransferResult -> transferResult
  *
- *	Copy the result (and error information) from one interp to 
- *	another.  Used when one interp has caused another interp to 
- *	evaluate a script and then wants to transfer the results back
- *	to itself.
+ *  Copy the result (and error information) from one interp to 
+ *  another.  Used when one interp has caused another interp to 
+ *  evaluate a script and then wants to transfer the results back
+ *  to itself.
  *
- *	This routine copies the string reps of the result and error 
- *	information.  It does not simply increment the refcounts of the
- *	result and error information objects themselves.
- *	It is not legal to exchange objects between interps, because an
- *	object may be kept alive by one interp, but have an internal rep 
- *	that is only valid while some other interp is alive.  
+ *  This routine copies the string reps of the result and error 
+ *  information.  It does not simply increment the refcounts of the
+ *  result and error information objects themselves.
+ *  It is not legal to exchange objects between interps, because an
+ *  object may be kept alive by one interp, but have an internal rep 
+ *  that is only valid while some other interp is alive.  
  *
  * Results:
- *	The target interp's result is set to a copy of the source interp's
- *	result.  The source's error information "$errorInfo" may be
- *	appended to the target's error information and the source's error
- *	code "$errorCode" may be stored in the target's error code.
+ *  The target interp's result is set to a copy of the source interp's
+ *  result.  The source's error information "$errorInfo" may be
+ *  appended to the target's error information and the source's error
+ *  code "$errorCode" may be stored in the target's error code.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *-------------------------------------------------------------------------
  */
 
 void
 transferResult(
-    Interp sourceInterp,	// Interp whose result and error information
-				// should be moved to the target interp.  
-				// After moving result, this interp's result 
-				// is reset.
-    int result)			// TCL.OK if just the result should be copied, 
-				// TCL.ERROR if both the result and error 
-				// information should be copied.
+    Interp sourceInterp,    // Interp whose result and error information
+                // should be moved to the target interp.  
+                // After moving result, this interp's result 
+                // is reset.
+    int result)         // TCL.OK if just the result should be copied, 
+                // TCL.ERROR if both the result and error 
+                // information should be copied.
 throws 
     TclException
 {
@@ -4002,26 +4002,26 @@ throws
     if (result == TCL.ERROR) {
         TclObject obj;
 
-	// An error occurred, so transfer error information from the source
-	// interpreter to the target interpreter.  Setting the flags tells
-	// the target interp that it has inherited a partial traceback
-	// chain, not just a simple error message.
+    // An error occurred, so transfer error information from the source
+    // interpreter to the target interpreter.  Setting the flags tells
+    // the target interp that it has inherited a partial traceback
+    // chain, not just a simple error message.
 
-	if (!sourceInterp.errAlreadyLogged) {
-	    sourceInterp.addErrorInfo("");
+    if (!sourceInterp.errAlreadyLogged) {
+        sourceInterp.addErrorInfo("");
         }
         sourceInterp.errAlreadyLogged = true;
 
         resetResult();
 
-	obj = sourceInterp.getVar("errorInfo", TCL.GLOBAL_ONLY);
-	setVar("errorInfo", obj, TCL.GLOBAL_ONLY);
+    obj = sourceInterp.getVar("errorInfo", TCL.GLOBAL_ONLY);
+    setVar("errorInfo", obj, TCL.GLOBAL_ONLY);
 
-	obj = sourceInterp.getVar("errorCode", TCL.GLOBAL_ONLY);
-	setVar("errorCode", obj, TCL.GLOBAL_ONLY);
+    obj = sourceInterp.getVar("errorCode", TCL.GLOBAL_ONLY);
+    setVar("errorCode", obj, TCL.GLOBAL_ONLY);
 
-	errInProgress = true;
-	errCodeSet = true;
+    errInProgress = true;
+    errCodeSet = true;
     }
 
     returnCode = result;
@@ -4029,7 +4029,7 @@ throws
     sourceInterp.resetResult();
 
     if (result != TCL.OK) {
-	throw new TclException(this, getResult().toString(), result);
+    throw new TclException(this, getResult().toString(), result);
     }
 }
 
@@ -4038,15 +4038,15 @@ throws
  *
  * Tcl_HideCommand -> hideCommand
  *
- *	Makes a command hidden so that it cannot be invoked from within
- *	an interpreter, only from within an ancestor.
+ *  Makes a command hidden so that it cannot be invoked from within
+ *  an interpreter, only from within an ancestor.
  *
  * Results:
- *	A standard Tcl result; also leaves a message in the interp's result
- *	if an error occurs.
+ *  A standard Tcl result; also leaves a message in the interp's result
+ *  if an error occurs.
  *
  * Side effects:
- *	Removes a command from the command table and create an entry
+ *  Removes a command from the command table and create an entry
  *      into the hidden command table under the specified token name.
  *
  *---------------------------------------------------------------------------
@@ -4054,16 +4054,16 @@ throws
 
 void
 hideCommand(
-    String cmdName,		// Name of command to hide.
-    String hiddenCmdToken)	// Token name of the to-be-hidden command.
+    String cmdName,     // Name of command to hide.
+    String hiddenCmdToken)  // Token name of the to-be-hidden command.
 throws
     TclException
 {
     WrappedCommand cmd;
 
     if (deleted) {
-	// The interpreter is being deleted. Do not create any new
-	// structures, because it is not safe to modify the interpreter.
+    // The interpreter is being deleted. Do not create any new
+    // structures, because it is not safe to modify the interpreter.
         return;
     }
 
@@ -4089,7 +4089,7 @@ throws
 
     if (hiddenCmdToken.indexOf("::") >= 0) {
         throw new TclException(this, "cannot use namespace qualifiers as "
-		      + "hidden commandtoken (rename)");
+              + "hidden commandtoken (rename)");
     }
 
     // Find the command to hide. An error is returned if cmdName can't
@@ -4097,13 +4097,13 @@ throws
     // Full path of the command must be given if using namespaces.
 
     cmd = Namespace.findCommand(this, cmdName, null,
-	    /*flags*/ TCL.LEAVE_ERR_MSG | TCL.GLOBAL_ONLY);
+        /*flags*/ TCL.LEAVE_ERR_MSG | TCL.GLOBAL_ONLY);
 
     // Check that the command is really in global namespace
 
     if (cmd.ns != globalNs) {
         throw new TclException(this, "can only hide global namespace commands"
-		      + " (use rename then hide)");
+              + " (use rename then hide)");
     }
     
     // Initialize the hidden command table if necessary.
@@ -4118,7 +4118,7 @@ throws
     
     if (hiddenCmdTable.containsKey(hiddenCmdToken)) {
         throw new TclException(this, "hidden command named \""
-		      + hiddenCmdToken + "\" already exists");
+              + hiddenCmdToken + "\" already exists");
     }
 
     // Nb : This code is currently 'like' a rename to a specialy set apart
@@ -4131,8 +4131,8 @@ throws
     // this invalidates any cached references that point to the command.
 
     if (cmd.table.containsKey(cmd.hashKey)) {
-	cmd.table.remove(cmd.hashKey);
-	cmd.incrEpoch();
+    cmd.table.remove(cmd.hashKey);
+    cmd.incrEpoch();
     }
 
     // Now link the hash table entry with the command structure.
@@ -4148,31 +4148,31 @@ throws
  *
  * Tcl_ExposeCommand -> exposeCommand
  *
- *	Makes a previously hidden command callable from inside the
- *	interpreter instead of only by its ancestors.
+ *  Makes a previously hidden command callable from inside the
+ *  interpreter instead of only by its ancestors.
  *
  * Results:
- *	A standard Tcl result. If an error occurs, a message is left
- *	in the interp's result.
+ *  A standard Tcl result. If an error occurs, a message is left
+ *  in the interp's result.
  *
  * Side effects:
- *	Moves commands from one hash table to another.
+ *  Moves commands from one hash table to another.
  *
  *----------------------------------------------------------------------
  */
 
 void
 exposeCommand(
-    String hiddenCmdToken,	// Token name of the to-be-hidden command.
-    String cmdName)		// Name of command to hide.
+    String hiddenCmdToken,  // Token name of the to-be-hidden command.
+    String cmdName)     // Name of command to hide.
 throws
     TclException
 {
     WrappedCommand cmd;
 
     if (deleted) {
-	// The interpreter is being deleted. Do not create any new
-	// structures, because it is not safe to modify the interpreter.
+    // The interpreter is being deleted. Do not create any new
+    // structures, because it is not safe to modify the interpreter.
         return;
     }
 
@@ -4182,15 +4182,15 @@ throws
 
     if (cmdName.indexOf("::") >= 0) {
         throw new TclException(this, "can not expose to a namespace "
-		      + "(use expose to toplevel, then rename)");
+              + "(use expose to toplevel, then rename)");
     }
 
     // Get the command from the hidden command table:
 
     if (hiddenCmdTable == null
-	|| !hiddenCmdTable.containsKey(hiddenCmdToken)) {
+    || !hiddenCmdTable.containsKey(hiddenCmdToken)) {
         throw new TclException(this, "unknown hidden command \""
-		      + hiddenCmdToken + "\"");
+              + hiddenCmdToken + "\"");
     }
     cmd = (WrappedCommand) hiddenCmdTable.get(hiddenCmdToken);
     
@@ -4201,11 +4201,11 @@ throws
 
     if (cmd.ns != globalNs) {
 
-	// This case is theoritically impossible,
-	// we might rather panic() than 'nicely' erroring out ?
+    // This case is theoritically impossible,
+    // we might rather panic() than 'nicely' erroring out ?
 
         throw new TclException(this, "trying to expose "
-		      + "a non global command name space command");
+              + "a non global command name space command");
     }
     
     // This is the global table
@@ -4216,16 +4216,16 @@ throws
 
     if (ns.cmdTable.containsKey(cmdName)) {
       throw new TclException(this, "exposed command \""
-			     + cmdName + "\" already exists");
+                 + cmdName + "\" already exists");
     }
 
     // Remove the hash entry for the command from the interpreter hidden
     // command table.
 
     if (cmd.hashKey != null) {
-	cmd.table.remove(cmd.hashKey);
-	cmd.table = ns.cmdTable;
-	cmd.hashKey = cmdName;
+    cmd.table.remove(cmd.hashKey);
+    cmd.table = ns.cmdTable;
+    cmd.hashKey = cmdName;
     }
 
     // Now link the hash table entry with the command structure.
@@ -4245,14 +4245,14 @@ throws
  *
  * TclHideUnsafeCommands -> hideUnsafeCommands
  *
- *	Hides base commands that are not marked as safe from this
- *	interpreter.
+ *  Hides base commands that are not marked as safe from this
+ *  interpreter.
  *
  * Results:
- *	None
+ *  None
  *
  * Side effects:
- *	Hides functionality in an interpreter.
+ *  Hides functionality in an interpreter.
  *
  *----------------------------------------------------------------------
  */
@@ -4263,13 +4263,13 @@ throws
     TclException
 {
     for (int ix = 0; ix < unsafeCmds.length; ix++) {
-	try {
-	    hideCommand(unsafeCmds[ix], unsafeCmds[ix]);
-	} catch (TclException e) {
-	    if (!e.getMessage().startsWith("unknown command")) {
-	        throw e;
-	    }
-	}
+    try {
+        hideCommand(unsafeCmds[ix], unsafeCmds[ix]);
+    } catch (TclException e) {
+        if (!e.getMessage().startsWith("unknown command")) {
+            throw e;
+        }
+    }
     }
 }
 
@@ -4278,38 +4278,38 @@ throws
  *
  * TclObjInvokeGlobal -> invokeGlobal
  *
- *	Invokes a Tcl command, given an objv/objc, from	either the
- *	exposed or hidden set of commands in the given interpreter.
- *	NOTE: The command is invoked in the global stack frame of the
- *	interpreter, thus it cannot see any current state on the
- *	stack of that interpreter.
+ *  Invokes a Tcl command, given an objv/objc, from either the
+ *  exposed or hidden set of commands in the given interpreter.
+ *  NOTE: The command is invoked in the global stack frame of the
+ *  interpreter, thus it cannot see any current state on the
+ *  stack of that interpreter.
  *
  * Results:
- *	A standard Tcl result.
+ *  A standard Tcl result.
  *
  * Side effects:
- *	Whatever the command does.
+ *  Whatever the command does.
  *
  *----------------------------------------------------------------------
  */
 
 int
 invokeGlobal(
-  TclObject[] objv,		// Argument objects; objv[0] points to the
-				// name of the command to invoke.
-  int flags)			// Combination of flags controlling the call:
-				// INVOKE_HIDDEN,_INVOKE_NO_UNKNOWN,
-				// or INVOKE_NO_TRACEBACK.
+  TclObject[] objv,     // Argument objects; objv[0] points to the
+                // name of the command to invoke.
+  int flags)            // Combination of flags controlling the call:
+                // INVOKE_HIDDEN,_INVOKE_NO_UNKNOWN,
+                // or INVOKE_NO_TRACEBACK.
 throws
     TclException
 {
     CallFrame savedVarFrame = varFrame;
 
     try {
-	varFrame = null;
-	return invoke(objv, flags);
+    varFrame = null;
+    return invoke(objv, flags);
     } finally {
-	varFrame = savedVarFrame;
+    varFrame = savedVarFrame;
     }
 }
 
@@ -4318,30 +4318,30 @@ throws
  *
  * TclObjInvoke -> invoke
  *
- *	Invokes a Tcl command, given an objv/objc, from either the
- *	exposed or the hidden sets of commands in the given interpreter.
+ *  Invokes a Tcl command, given an objv/objc, from either the
+ *  exposed or the hidden sets of commands in the given interpreter.
  *
  * Results:
- *	A standard Tcl object result.
+ *  A standard Tcl object result.
  *
  * Side effects:
- *	Whatever the command does.
+ *  Whatever the command does.
  *
  *----------------------------------------------------------------------
  */
 
 int
 invoke(
-  TclObject[] objv,		// Argument objects; objv[0] points to the
-				// name of the command to invoke.
-  int flags)			// Combination of flags controlling the call:
-				// INVOKE_HIDDEN,_INVOKE_NO_UNKNOWN,
-				// or INVOKE_NO_TRACEBACK.
+  TclObject[] objv,     // Argument objects; objv[0] points to the
+                // name of the command to invoke.
+  int flags)            // Combination of flags controlling the call:
+                // INVOKE_HIDDEN,_INVOKE_NO_UNKNOWN,
+                // or INVOKE_NO_TRACEBACK.
 throws
     TclException
 {
     if ((objv.length < 1) || (objv == null)) {
-	throw new TclException(this, "illegal argument vector");
+    throw new TclException(this, "illegal argument vector");
     }
 
     ready();
@@ -4352,23 +4352,23 @@ throws
 
     if ((flags & INVOKE_HIDDEN) != 0) {
 
-	// We never invoke "unknown" for hidden commands.
+    // We never invoke "unknown" for hidden commands.
 
         if (hiddenCmdTable == null || !hiddenCmdTable.containsKey(cmdName)) {
-	    throw new TclException(this, "invalid hidden command name \""
-			  + cmdName + "\"");
+        throw new TclException(this, "invalid hidden command name \""
+              + cmdName + "\"");
         }
-	cmd = (WrappedCommand) hiddenCmdTable.get(cmdName);
+    cmd = (WrappedCommand) hiddenCmdTable.get(cmdName);
     } else {
-	cmd = Namespace.findCommand(this, cmdName, null, TCL.GLOBAL_ONLY);
-	if (cmd == null) {
+    cmd = Namespace.findCommand(this, cmdName, null, TCL.GLOBAL_ONLY);
+    if (cmd == null) {
             if ((flags & INVOKE_NO_UNKNOWN) == 0) {
-		cmd = Namespace.findCommand(this, "unknown",
-			  null, TCL.GLOBAL_ONLY);
+        cmd = Namespace.findCommand(this, "unknown",
+              null, TCL.GLOBAL_ONLY);
                 if (cmd != null) {
-		    localObjv = new TclObject[objv.length+1];
-		    localObjv[0] = TclString.newInstance("unknown");
-		    localObjv[0].preserve();
+            localObjv = new TclObject[objv.length+1];
+            localObjv[0] = TclString.newInstance("unknown");
+            localObjv[0].preserve();
                     for (int i = 0;  i < objv.length;  i++) {
                         localObjv[i+1] = objv[i];
                     }
@@ -4376,13 +4376,13 @@ throws
                 }
             }
 
-	    // Check again if we found the command. If not, "unknown" is
-	    // not present and we cannot help, or the caller said not to
-	    // call "unknown" (they specified TCL_INVOKE_NO_UNKNOWN).
+        // Check again if we found the command. If not, "unknown" is
+        // not present and we cannot help, or the caller said not to
+        // call "unknown" (they specified TCL_INVOKE_NO_UNKNOWN).
 
             if (cmd == null) {
-		throw new TclException(this, "invalid command name \""
-			  + cmdName + "\"");
+        throw new TclException(this, "invalid command name \""
+              + cmdName + "\"");
             }
         }
     }
@@ -4396,9 +4396,9 @@ throws
 
     int result = TCL.OK;
     try {
-	cmd.cmd.cmdProc(this, objv);
+    cmd.cmd.cmdProc(this, objv);
     } catch (TclException e) {
-	result = e.getCompletionCode();
+    result = e.getCompletionCode();
     }
 
     // If we invoke a procedure, which was implemented as AutoloadStub,
@@ -4408,22 +4408,22 @@ throws
     // move it into the hiddenCmdTable.
 
     if ((flags & INVOKE_HIDDEN) != 0) {
-	cmd = Namespace.findCommand(this, cmdName, null, TCL.GLOBAL_ONLY);
-	if (cmd != null) {
-	    // Basically just do the same as in hideCommand...
-	    cmd.table.remove(cmd.hashKey);
-	    cmd.table = hiddenCmdTable;
-	    cmd.hashKey = cmdName;
-	    hiddenCmdTable.put(cmdName, cmd);
-	}
+    cmd = Namespace.findCommand(this, cmdName, null, TCL.GLOBAL_ONLY);
+    if (cmd != null) {
+        // Basically just do the same as in hideCommand...
+        cmd.table.remove(cmd.hashKey);
+        cmd.table = hiddenCmdTable;
+        cmd.hashKey = cmdName;
+        hiddenCmdTable.put(cmdName, cmd);
+    }
     }
 
     // If an error occurred, record information about what was being
     // executed when the error occurred.
 
     if ((result == TCL.ERROR)
-	&& ((flags & INVOKE_NO_TRACEBACK) == 0)
-	&& !errAlreadyLogged) {
+    && ((flags & INVOKE_NO_TRACEBACK) == 0)
+    && !errAlreadyLogged) {
         StringBuffer ds;
 
         if (errInProgress) {
@@ -4432,7 +4432,7 @@ throws
             ds = new StringBuffer("\n    invoked from within\n\"");
         }
         for (int i = 0;  i < objv.length;  i++) {
-	    ds.append(objv[i].toString());
+        ds.append(objv[i].toString());
             if (i < (objv.length - 1)) {
                 ds.append(" ");
             } else if (ds.length() > 100) {
@@ -4441,14 +4441,14 @@ throws
             }
         }
         ds.append("\"");
-	addErrorInfo(ds.toString());
-	errInProgress = true;
+    addErrorInfo(ds.toString());
+    errInProgress = true;
     }
 
     // Free any locally allocated storage used to call "unknown".
 
     if (localObjv != null) {
-	localObjv[0].release();
+    localObjv[0].release();
     }
 
     return result;
@@ -4459,17 +4459,17 @@ throws
  *
  * Tcl_AllowExceptions -> allowExceptions
  *
- *	Sets a flag in an interpreter so that exceptions can occur
- *	in the next call to Tcl_Eval without them being turned into
- *	errors.
+ *  Sets a flag in an interpreter so that exceptions can occur
+ *  in the next call to Tcl_Eval without them being turned into
+ *  errors.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The TCL_ALLOW_EXCEPTIONS flag gets set in the interpreter's
- *	evalFlags structure.  See the reference documentation for
- *	more details.
+ *  The TCL_ALLOW_EXCEPTIONS flag gets set in the interpreter's
+ *  evalFlags structure.  See the reference documentation for
+ *  more details.
  *
  *----------------------------------------------------------------------
  */
@@ -4482,12 +4482,12 @@ allowExceptions()
 
 
 class ResolverScheme {
-    String name;		// Name identifying this scheme.
+    String name;        // Name identifying this scheme.
     Resolver resolver;
 
     ResolverScheme(String name, Resolver resolver) {
-	this.name = name;
-	this.resolver = resolver;
+    this.name = name;
+    this.resolver = resolver;
     }
 }
   
@@ -4497,33 +4497,33 @@ class ResolverScheme {
  *
  * Tcl_AddInterpResolvers -> addInterpResolver
  *
- *	Adds a set of command/variable resolution procedures to an
- *	interpreter.  These procedures are consulted when commands
- *	are resolved in Namespace.findCommand, and when variables are
- *	resolved in Namespace.findNamespaceVar and thus Var.lookupVar.
- *	Each namespace may also have its own resolution object
- *	which take precedence over those for the interpreter.
+ *  Adds a set of command/variable resolution procedures to an
+ *  interpreter.  These procedures are consulted when commands
+ *  are resolved in Namespace.findCommand, and when variables are
+ *  resolved in Namespace.findNamespaceVar and thus Var.lookupVar.
+ *  Each namespace may also have its own resolution object
+ *  which take precedence over those for the interpreter.
  *
- *	When a name is resolved, it is handled as follows.  First,
- *	the name is passed to the resolution objects for the
- *	namespace.  If not resolved, the name is passed to each of
- *	the resolution procedures added to the interpreter.  Finally,
- *	if still not resolved, the name is handled using the default
- *	Tcl rules for name resolution.
+ *  When a name is resolved, it is handled as follows.  First,
+ *  the name is passed to the resolution objects for the
+ *  namespace.  If not resolved, the name is passed to each of
+ *  the resolution procedures added to the interpreter.  Finally,
+ *  if still not resolved, the name is handled using the default
+ *  Tcl rules for name resolution.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	The list of resolvers of the given interpreter is modified.
+ *  The list of resolvers of the given interpreter is modified.
  *
  *----------------------------------------------------------------------
  */
 
 public void
 addInterpResolver(
-    String name,		// Name of this resolution scheme.
-    Resolver resolver)		// Object to resolve commands/variables.
+    String name,        // Name of this resolution scheme.
+    Resolver resolver)      // Object to resolve commands/variables.
 {
     ResolverScheme res;
 
@@ -4531,17 +4531,17 @@ addInterpResolver(
     //  If found, then replace its rules.
 
     if (resolvers != null) {
-	for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
-	    res = (ResolverScheme) iter.next();
-	    if (name.equals(res.name)) {
-		res.resolver = resolver;
-		return;
-	    }
+    for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
+        res = (ResolverScheme) iter.next();
+        if (name.equals(res.name)) {
+        res.resolver = resolver;
+        return;
+        }
         }
     }
 
     if (resolvers == null) {
-	resolvers = new ArrayList();
+    resolvers = new ArrayList();
     }
 
     //  Otherwise, this is a new scheme.  Add it to the FRONT
@@ -4557,24 +4557,24 @@ addInterpResolver(
  *
  * Tcl_GetInterpResolvers -> getInterpResolver
  *
- *	Looks for a set of command/variable resolution procedures with
- *	the given name in an interpreter.  These procedures are
- *	registered by calling addInterpResolver.
+ *  Looks for a set of command/variable resolution procedures with
+ *  the given name in an interpreter.  These procedures are
+ *  registered by calling addInterpResolver.
  *
  * Results:
- *	If the name is recognized, this procedure returns the object
- *	implementing the name resolution procedures.
- *	If the name is not recognized, this procedure returns null.
+ *  If the name is recognized, this procedure returns the object
+ *  implementing the name resolution procedures.
+ *  If the name is not recognized, this procedure returns null.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
 
 public Resolver 
 getInterpResolver(
-    String name)		// Look for a scheme with this name.
+    String name)        // Look for a scheme with this name.
 {
     ResolverScheme res;
     Enumeration e;
@@ -4583,12 +4583,12 @@ getInterpResolver(
     //  then return pointers to its procedures.
 
     if (resolvers != null) {
-	for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
-	    res = (ResolverScheme) iter.next();
-	    if (name.equals(res.name)) {
-		return res.resolver;
-	    }
-	}
+    for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
+        res = (ResolverScheme) iter.next();
+        if (name.equals(res.name)) {
+        return res.resolver;
+        }
+    }
     }
 
     return null;
@@ -4599,17 +4599,17 @@ getInterpResolver(
  *
  * Tcl_RemoveInterpResolvers -> removeInterpResolver
  *
- *	Removes a set of command/variable resolution procedures
- *	previously added by addInterpResolver.  The next time
- *	a command/variable name is resolved, these procedures
- *	won't be consulted.
+ *  Removes a set of command/variable resolution procedures
+ *  previously added by addInterpResolver.  The next time
+ *  a command/variable name is resolved, these procedures
+ *  won't be consulted.
  *
  * Results:
- *	Returns true if the name was recognized and the
- *	resolution scheme was deleted.  Returns false otherwise.
+ *  Returns true if the name was recognized and the
+ *  resolution scheme was deleted.  Returns false otherwise.
  *
  * Side effects:
- *	The list of resolvers of the given interpreter may be modified.
+ *  The list of resolvers of the given interpreter may be modified.
  *
  *----------------------------------------------------------------------
  */
@@ -4617,7 +4617,7 @@ getInterpResolver(
 public
 boolean
 removeInterpResolver(
-    String name)		// Name of the scheme to be removed.
+    String name)        // Name of the scheme to be removed.
 {
     ResolverScheme res;
     boolean found = false;
@@ -4625,23 +4625,23 @@ removeInterpResolver(
     //  Look for an existing scheme with the given name.
 
     if (resolvers != null) {
-	for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
-	    res = (ResolverScheme) iter.next();
-	    if (name.equals(res.name)) {
-		found = true;
-		break;
-	    }
-	}
+    for (ListIterator iter = resolvers.listIterator(); iter.hasNext(); ) {
+        res = (ResolverScheme) iter.next();
+        if (name.equals(res.name)) {
+        found = true;
+        break;
+        }
+    }
     }
 
     //  If we found the scheme, delete it.
 
     if (found) {
-	int index = resolvers.indexOf(name);
-	if (index == -1) {
-	    throw new TclRuntimeError("name " + name + " not found in resolvers");
-	}
-	resolvers.remove(index);
+    int index = resolvers.indexOf(name);
+    if (index == -1) {
+        throw new TclRuntimeError("name " + name + " not found in resolvers");
+    }
+    resolvers.remove(index);
     }
 
     return found;
@@ -4652,10 +4652,10 @@ removeInterpResolver(
  *
  * checkCommonInteger()
  *
- *	If a given integer value is in the common value pool
- *	then return a shared object for that integer. If the
- *	integer value is not in the common pool then use to
- *	use the recycled int value or a new TclObject.
+ *  If a given integer value is in the common value pool
+ *  then return a shared object for that integer. If the
+ *  integer value is not in the common pool then use to
+ *  use the recycled int value or a new TclObject.
  *
  *----------------------------------------------------------------------
  */
@@ -4736,10 +4736,10 @@ TclObject checkCommonInteger(int value)
  *
  * checkCommonDouble()
  *
- *	If a given double value is in the common value pool
- *	the return a shared object for that double. If the
- *	double value is not in the common pool then a new
- *	TclDouble wrapped in a TclObject will be created.
+ *  If a given double value is in the common value pool
+ *  the return a shared object for that double. If the
+ *  double value is not in the common pool then a new
+ *  TclDouble wrapped in a TclObject will be created.
  *
  *----------------------------------------------------------------------
  */
@@ -4814,7 +4814,7 @@ TclObject checkCommonDouble(double value)
  *
  * checkCommonBoolean()
  *
- *	Always return a shared boolean TclObject.
+ *  Always return a shared boolean TclObject.
  *
  *----------------------------------------------------------------------
  */
@@ -4844,10 +4844,10 @@ TclObject checkCommonBoolean(boolean value)
  *
  * checkCommonString()
  *
- *	If a given String value is in the common value pool
- *	the return a shared object for that String. If the
- *	String value is not in the common pool then a new
- *	TclString wrapped in a TclObject will be created.
+ *  If a given String value is in the common value pool
+ *  the return a shared object for that String. If the
+ *  String value is not in the common pool then a new
+ *  TclString wrapped in a TclObject will be created.
  *
  *----------------------------------------------------------------------
  */
@@ -4874,13 +4874,13 @@ TclObject checkCommonString(String value)
  *
  * checkCommonCharacter()
  *
- *	It is very common to create a TclObject that contains
- *	a single character. It can be costly to allocate a
- *	TclObject, a TclString internal rep, and a String
- *	to represent a character. This method avoids that
- *	overhead for the most common characters. This method
- *	will return null if a character does not have a
- *	cached value.
+ *  It is very common to create a TclObject that contains
+ *  a single character. It can be costly to allocate a
+ *  TclObject, a TclString internal rep, and a String
+ *  to represent a character. This method avoids that
+ *  overhead for the most common characters. This method
+ *  will return null if a character does not have a
+ *  cached value.
  *
  *----------------------------------------------------------------------
  */
@@ -4905,16 +4905,16 @@ TclObject checkCommonCharacter(int c)
  *
  * getErrorLine --
  *
- *	Query the interp.errorLine member. This is like accessing
- *	the public Tcl_Interp.errorLine field in the C impl.
- *	this method should be used by classes outside the
- *	tcl.lang package.
+ *  Query the interp.errorLine member. This is like accessing
+ *  the public Tcl_Interp.errorLine field in the C impl.
+ *  this method should be used by classes outside the
+ *  tcl.lang package.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -4931,18 +4931,18 @@ getErrorLine()
  *
  * getClassLoader --
  *
- *	Get the TclClassLoader used for the interp. This
- *	class loader delagates to the context class loader
- *	which delagates to the system class loader.
- *	The TclClassLoader will read classes and resources
- *	from the env(TCL_CLASSPATH).
+ *  Get the TclClassLoader used for the interp. This
+ *  class loader delagates to the context class loader
+ *  which delagates to the system class loader.
+ *  The TclClassLoader will read classes and resources
+ *  from the env(TCL_CLASSPATH).
  *
  * Results:
- *	This method will return the classloader in use,
- *	it will never return null.
+ *  This method will return the classloader in use,
+ *  it will never return null.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -4969,15 +4969,15 @@ getClassLoader()
  *
  * getResourceAsStream --
  *
- *	Resolve a resource name into an InputStream. This method
- *	will search for a resource using the TclClassLoader.
- *	This method will return null if a resource can't be found.
+ *  Resolve a resource name into an InputStream. This method
+ *  will search for a resource using the TclClassLoader.
+ *  This method will return null if a resource can't be found.
  *
  * Results:
- *	None.
+ *  None.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -4995,7 +4995,7 @@ getResourceAsStream(String resName)
         // context loader (if there is one), and then on
         // the env(TCL_CLASSPATH).
 
-	return classLoader.getResourceAsStream(resName);
+    return classLoader.getResourceAsStream(resName);
     } catch (PackageNameException e) {
         // Failed attempt to load resource with java or tcl prefix.
 
@@ -5013,19 +5013,19 @@ getResourceAsStream(String resName)
  *
  * setInterrupted --
  *
- *	Invoke this method to indicate that an executing interp
- *	should be interrupted at the next safe moment. Interrupting
- *	a running interpreter will unwind the stack by throwing
- *	an exception. This method can safely be called from a
- *	thread other than the one processsing events. No explicit
- *	synchronization is needed. Once a thread has been interrupted
- *	or disposed of, setInterrupted() calls will do nothing.
+ *  Invoke this method to indicate that an executing interp
+ *  should be interrupted at the next safe moment. Interrupting
+ *  a running interpreter will unwind the stack by throwing
+ *  an exception. This method can safely be called from a
+ *  thread other than the one processsing events. No explicit
+ *  synchronization is needed. Once a thread has been interrupted
+ *  or disposed of, setInterrupted() calls will do nothing.
  *
  * Results:
- *	Stops execution of the Interp via an Exception.
+ *  Stops execution of the Interp via an Exception.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -5079,19 +5079,19 @@ setInterrupted()
  *
  * checkInterrupted --
  *
- *	This method is invoked after an eval operation to check
- *	if a running interp has been marked as interrupted.
- *	This method is not public since it should only be
- *	used by the Jacl internal implementation.
+ *  This method is invoked after an eval operation to check
+ *  if a running interp has been marked as interrupted.
+ *  This method is not public since it should only be
+ *  used by the Jacl internal implementation.
  *
  * Results:
- *	This method will raise a TclInterruptedException if
- *	the Interp.setInterrupted() method was invoked for
- *	this interp. This method will only raise a
- *	TclInterruptedException once.
+ *  This method will raise a TclInterruptedException if
+ *  the Interp.setInterrupted() method was invoked for
+ *  this interp. This method will only raise a
+ *  TclInterruptedException once.
  *
  * Side effects:
- *	None.
+ *  None.
  *
  *----------------------------------------------------------------------
  */
@@ -5116,14 +5116,14 @@ checkInterrupted()
  *
  * disposeInterrupted --
  *
- *	This method is invoked to cleanup an Interp object that
- *	has been interrupted and had its stack unwound. This method
- *	will remove any pending events from the Tcl event queue and
- *	then invoke the dispose() method for this interp. The interp
- *	object should not be used after this method has finished.
- *	This method must only ever be invoked after catching
- *	a TclInterrupted exception at the outermost level of
- *	the Tcl event processing loop.
+ *  This method is invoked to cleanup an Interp object that
+ *  has been interrupted and had its stack unwound. This method
+ *  will remove any pending events from the Tcl event queue and
+ *  then invoke the dispose() method for this interp. The interp
+ *  object should not be used after this method has finished.
+ *  This method must only ever be invoked after catching
+ *  a TclInterrupted exception at the outermost level of
+ *  the Tcl event processing loop.
  *
  *----------------------------------------------------------------------
  */
@@ -5224,7 +5224,7 @@ disposeInterrupted()
  *
  * toString --
  *
- *	Debug print info about the interpreter.
+ *  Debug print info about the interpreter.
  *
  *----------------------------------------------------------------------
  */
